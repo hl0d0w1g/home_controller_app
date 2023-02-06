@@ -1,0 +1,6 @@
+[MESSAGES CONTROL]
+
+disable=wrong-import-position,
+        unused-import,
+        global-statement,
+        cyclic-import,

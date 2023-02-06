@@ -1,0 +1,21 @@
+# syntax=docker/dockerfile:1
+
+FROM python:3.9
+
+RUN apt-get update -y
+RUN apt-get install -y python3-pip python3-dev build-essential libssl-dev libffi-dev python3-setuptools
+RUN pip3 install --upgrade pip
+
+COPY . /usr/src/home_controller_app
+WORKDIR /usr/src/home_controller_app
+
+RUN pip install -r requirements.txt
+RUN pip install RPi.GPIO==0.7.1
+
+ARG REPOSITORY_BRANCH
+ENV REPOSITORY_BRANCH $REPOSITORY_BRANCH
+
+ARG REMOTE_REPOSITORY
+ENV REMOTE_REPOSITORY $REMOTE_REPOSITORY
+
+RUN git clone -b $REPOSITORY_BRANCH --single-branch $REMOTE_REPOSITORY

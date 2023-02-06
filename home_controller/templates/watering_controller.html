@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Watering Controller</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+        integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+    <link rel="stylesheet" href="./static/css/styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link rel="icon" href="./static/media/moisture.svg">
+
+</head>
+
+<body onload="getInfo()">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/"><i class="bi bi-robot"></i> Home App</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-start" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/watering-controller"><i class="bi bi-moisture"></i> Control de riego</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/water-flow-sensor"><i class="bi bi-fan"></i> Flujo de agua</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+                <span id="dateTime" class="navbar-text mx-2"></span>
+                <button id="logoutButton" class="btn btn-outline-light" type="submit" hidden>Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    
+    <div class="mx-3 px-3">
+        
+        <div class="row justify-content-center">
+            <div class="col-auto">
+                
+                <div class="my-4 alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>AVISO</strong>: Los programas en ejecución y circuitos abiertos podrían tardar algunos minutos en verse reflejados aquí.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                
+                <div class="row justify-content-center p-2">
+                    <div class="col">
+
+                        <div class="row justify-content-between">
+                            <div class="col-auto">
+                                <h3>
+                                    Programas
+                                </h3>
+                            </div>
+                            <div class="col-auto">
+                                <button id="buttonEditPrograms" type="button" class="btn btn-link">Editar</button>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-auto">
+                                <table class="table table-borderless">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center" scope="col">ID</th>
+                                            <th class="text-center" scope="col">Días</th>
+                                            <th class="text-center" scope="col">Hora(s) Inicio</th>
+                                            <th class="text-center" scope="col">Tiempo Total (mins)</th>
+                                            <th class="text-center" scope="col">Circuitos</th>
+                                            <th class="text-center" scope="col">Activo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="programsTable">
+                                        <!-- <tr>
+                                            <th scope="row" align="center">
+                                                <button type="button" class="btn btn-outline-primary">1</button>
+                                            </th>
+                                            <td class="align-middle" align="center">L | X</td>
+                                            <td class="align-middle" align="center">13:00</td>
+                                            <td class="align-middle" align="center">20</td>
+                                            <td class="align-middle" align="center">1 | 3 | 7</td>
+                                            <td class="align-middle" align="center">
+                                                <i class="bi bi-check-circle green-check"></i>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row" align="center">
+                                                <button type="button" class="btn btn-outline-primary">2</button>
+                                            </th>
+                                            <td class="align-middle" align="center">-</td>
+                                            <td class="align-middle" align="center">-</td>
+                                            <td class="align-middle" align="center">-</td>
+                                            <td class="align-middle" align="center">-</td>
+                                            <td class="align-middle" align="center">
+                                                <i class="bi bi-x-circle red-cross"></i>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row" align="center">
+                                                <button type="button" class="btn btn-outline-primary">3</button>
+                                            </th>
+                                            <td class="align-middle" align="center">L | M | J | D</td>
+                                            <td class="align-middle" align="center">09:00 | 20:00</td>
+                                            <td class="align-middle" align="center">30</td>
+                                            <td class="align-middle" align="center">2 | 5</td>
+                                            <td class="align-middle" align="center">
+                                                <i class="bi bi-check-circle green-check"></i>
+                                            </td>
+                                        </tr> -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="row justify-content-center p-2">
+                    <div class="col">
+
+                        <div class="row justify-content-start">
+                            <div class="col-auto">
+                                <h3>
+                                    Circuitos
+                                </h3>
+                            </div>
+                        </div>
+
+                        <div class="row justify-content-center">
+                            <div class="col-auto">
+
+                                <div class="input-group mb-3">
+                                    <input class="form-control" id="inputCircuitsTime" oninput="circuitsTimeOnInput()"
+                                        aria-label="Tiempo de apertura del circuito">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">minutos</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="col-auto py-2">
+                                <div class="btn-toolbar" role="toolbar">
+                                    <div class="btn-group mr-2" role="group" id="circuitsButtonsDiv">
+                                        <!-- <button type="button" class="btn btn-outline-primary">1</button>
+                                        <button type="button" class="btn btn-outline-primary">2</button>
+                                        <button type="button" class="btn btn-outline-primary">3</button>
+                                        <button type="button" class="btn btn-outline-primary">4</button>
+                                        <button type="button" class="btn btn-outline-primary">5</button>
+                                        <button type="button" class="btn btn-outline-primary">6</button>
+                                        <button type="button" class="btn btn-outline-primary">7</button>
+                                        <button type="button" class="btn btn-outline-primary">8</button>
+                                        <button type="button" class="btn btn-outline-primary">9</button>
+                                        <button type="button" class="btn btn-outline-primary">10</button>
+                                        <button type="button" class="btn btn-outline-primary">11</button>
+                                        <button type="button" class="btn btn-outline-primary">12</button> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="row justify-content-center p-2" id="cancelButton" hidden>
+                    <div class="col">
+                        <button type="button" class="btn btn-danger" style="width: 100%;" onclick="cancelButtonOnClick()">Cancelar</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"
+        integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA=="
+        crossorigin="anonymous"></script>
+    <script src="./static/js/watering_controller.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,47 @@
+version: '3'
+services:
+  pro:
+    container_name: 'app_production'
+    build: '.'
+    restart: 'always'
+    ports:
+      - '5000:5000'
+    volumes:
+      - '${LOGS_DIR}:/usr/src/home_controller_app/logs'
+      - '${DATA_DIR}:/usr/src/home_controller_app/data'
+      - '${CONFIG_DIR}:/usr/src/home_controller_app/config'
+      - '/etc/timezone:/etc/timezone:ro'
+      - '/etc/localtime:/etc/localtime:ro'
+    command:
+      - 'python -m flask run --host=0.0.0.0 --no-reload'
+    environment:
+      - 'FLASK_APP=app.py'
+      - 'FLASK_ENV=production'
+      - 'RPI_ENV=TRUE'
+      - 'LOG_FILE_PATH=config/history.log'
+      - 'REMOTE_REPOSITORY=https://github.com/lcambero/watering_controller_app'
+      - 'REMOTE_BRANCH=pro'
+
+  # pre:
+  #   container_name: 'app_preproduction'
+  #   build: 
+  #     context: .
+  #       dockerfile: DockerfileDev
+  #       args:
+  #         - REMOTE_REPOSITORY=${REMOTE_REPOSITORY}
+  #         - REPOSITORY_BRANCH=master
+  #   restart: 'no'
+  #   ports:
+  #     - '5001:5000'
+  #   volumes:
+  #     - './:/watering_controller'
+  #   command:
+  #     - 'python -m flask run --host=0.0.0.0 --port=5001 --no-reload'
+  #   environment:
+  #     - 'FLASK_APP=app.py'
+  #     - 'FLASK_ENV=production'
+  #     - 'RPI_ENV=FALSE'
+  #     - 'LOG_FILE_PATH=config/history.log'
+  #     - 'REMOTE_REPOSITORY=https://github.com/lcambero/watering_controller_app'
+  #     - 'REMOTE_BRANCH=pre'
+
