@@ -4,12 +4,12 @@ Program class
 An ordered list of circuits to activate during a certain time each circuit.
 '''
 
+from home_controller.config import WATERING_NAMESPACE, WATERING_N_CIRCUITS, WATERING_N_PROGRAMS
 from home_controller.utils import (
     logging, socket_emit, pause, hour_str_to_time, get_datetime, SPANISH_WEEKDAYS_SHORT
 )
 
 from .circuit import Circuit
-from .config import WATERING_NAMESPACE, WATERING_N_CIRCUITS, WATERING_N_PROGRAMS
 from .utils import read_watering_config
 
 

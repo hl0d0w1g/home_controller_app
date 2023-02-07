@@ -6,10 +6,10 @@ from flask import render_template, request, jsonify # pylint: disable=import-err
 # from flask_socketio import emit # pylint: disable=import-error
 
 from home_controller import app #, socketio
+from home_controller.config import WATER_FLOW_SENSOR_NAMESPACE
 from home_controller.utils import logging
 
 from . import controller
-from .config import WATER_FLOW_SENSOR_NAMESPACE
 from .utils import read_flow_measurement, read_historical_consumption
 
 # # --- SOCKETS ---

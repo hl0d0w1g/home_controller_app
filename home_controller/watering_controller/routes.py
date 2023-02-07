@@ -6,11 +6,11 @@ from flask import render_template, request, jsonify # pylint: disable=import-err
 # from flask_socketio import emit # pylint: disable=import-error
 
 from home_controller import app, socketio
+from home_controller.config import WATERING_NAMESPACE
 from home_controller.utils import logging
 
 from . import controller
 from .utils import read_watering_config
-from .config import WATERING_NAMESPACE
 
 
 # --- SOCKETS ---

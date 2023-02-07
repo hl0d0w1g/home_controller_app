@@ -4,13 +4,9 @@ Circuit
 Set of rpi pins to activate or deactivate a watering circuit.
 """
 
-from home_controller.rpi_pin import RpiPin
+from home_controller.config import WATERING_N_CIRCUITS
+from home_controller.IO import WATERING_0, WATERING_1, WATERING_2, WATERING_3, WATERING_ANY
 from home_controller.utils import logging
-
-from .config import (
-    WATERING_N_CIRCUITS, WATERING_PIN_ANY, WATERING_PIN_0,
-    WATERING_PIN_1, WATERING_PIN_2, WATERING_PIN_3
-)
 
 
 class Circuit():
@@ -40,10 +36,7 @@ class Circuit():
         assert(isinstance(idx, int) and 1 <= idx <= WATERING_N_CIRCUITS)
 
         self.idx = idx
-        self.pins = {
-            RpiPin(pin, True): active \
-                for pin, active in self.__circuit_activation_mask__(idx).items()
-        }
+        self.pins = self.__circuit_activation_mask__(idx)
         self.activated = False
 
     def __circuit_activation_mask__(self, idx:int) -> dict:
@@ -58,18 +51,19 @@ class Circuit():
                 pin1: active_pin1,
                 pin2: active_pin2,
                 pin3: active_pin3,
-                pin4: active_pin4,pin_any: active_pin_any
+                pin4: active_pin4,
+                pin_any: active_pin_any
             }
 
             Circuits are coded in binary, so each circuit is represented by 4 pins plus a 5th pin
             that is used to flag if any circuit is activated.
         '''
         watering_pins = {
-            3: WATERING_PIN_3,
-            2: WATERING_PIN_2,
-            1: WATERING_PIN_1,
-            0: WATERING_PIN_0,
-            'any': WATERING_PIN_ANY
+            3: WATERING_3,
+            2: WATERING_2,
+            1: WATERING_1,
+            0: WATERING_0,
+            'any': WATERING_ANY
         }
 
         active_mask = [bool(int(b)) for b in f'{idx:04b}']

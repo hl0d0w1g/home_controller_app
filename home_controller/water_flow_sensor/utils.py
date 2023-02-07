@@ -4,12 +4,12 @@ Utils
 import os
 import pandas as pd
 
+from home_controller.config import WATER_FLOW_SENSOR_MEASUREMENT_FREQUENCY
 from home_controller.utils import (
     logging, read_env_varaible, get_datetime,
     DATETIME_FMT
 )
 
-from .config import WATER_FLOW_SENSOR_MEASUREMENT_FREQUENCY
 
 def save_flow_measurement(datetime:str, flow:int) -> None:
     '''

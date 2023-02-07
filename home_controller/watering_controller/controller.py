@@ -5,16 +5,12 @@ Controller functions
 import threading
 import signal
 
-from home_controller.rpi_pin import RpiPin
+from home_controller.config import WATERING_N_CIRCUITS, WATERING_N_PROGRAMS, WATERING_NAMESPACE
+from home_controller.IO import WATERING_0, WATERING_1, WATERING_2, WATERING_3, WATERING_ANY
 from home_controller.utils import logging, socket_emit, get_datetime, pause
 
 from .program import Program, ScheduledProgram
 from .utils import save_watering_config, read_watering_config, weekday_time_combinations
-from .config import (
-    WATERING_N_CIRCUITS, WATERING_PIN_ANY, WATERING_PIN_0,
-    WATERING_PIN_1, WATERING_PIN_2, WATERING_PIN_3,
-    WATERING_N_PROGRAMS, WATERING_NAMESPACE
-)
 
 
 def init_program(idx:int) -> None:
@@ -57,20 +53,20 @@ def close_all_circuits() -> None:
         source_module='watering_controller'
     )
     watering_pins = [
-        WATERING_PIN_3,
-        WATERING_PIN_2,
-        WATERING_PIN_1,
-        WATERING_PIN_0,
-        WATERING_PIN_ANY
+        WATERING_3,
+        WATERING_2,
+        WATERING_1,
+        WATERING_0,
+        WATERING_ANY
     ]
 
     for pin in watering_pins:
         logging(
-            f'Pin {pin} deactivated',
+            f'Pin {pin.pin} deactivated',
             source='watering_controller/controller/close_all_circuits',
             source_module='watering_controller'
         )
-        RpiPin(pin, True).deactivate()
+        pin.deactivate()
 
 def new_programs_config(config:dict) -> None:
     '''

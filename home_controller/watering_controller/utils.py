@@ -7,12 +7,11 @@ import os
 import itertools
 from schema import Schema, And, Use # pylint: disable=import-error
 
+from home_controller.config import WATERING_N_CIRCUITS, WATERING_N_PROGRAMS
 from home_controller.utils import (
     logging, check_object_schema, read_env_varaible,
     SPANISH_WEEKDAYS_SHORT, HOUR_RE_PATTERN
 )
-
-from .config import WATERING_N_CIRCUITS, WATERING_N_PROGRAMS
 
 
 # Watering configuration json file schema
