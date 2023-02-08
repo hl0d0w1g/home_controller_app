@@ -5,9 +5,15 @@ Controller of water flow sensor
 import random
 import threading
 
-from home_controller.IO import MAIN_WATER_VALVE, WATER_FLOW_SENSOR, ELECTRICITY_SIGNAL
+from home_controller.IO import (
+    MAIN_WATER_VALVE, 
+    WATER_FLOW_SENSOR, 
+    ELECTRICITY_SIGNAL, 
+    WATERING_ANY
+)
 from home_controller.config import (
     WATER_FLOW_SENSOR_MEASUREMENT_FREQUENCY, 
+    MAX_CONTINUOUS_WATER_FLOW_MINS,
     WFS_CONST_SUM, 
     WFS_CONST_DIV
 )
@@ -29,51 +35,50 @@ def measure_water_flow(gap:float) -> float:
     Measure the water flow
     '''
     global WATER_FLOW_SENSOR_PULSES
+    global CONTINUOUS_WATER_FLOW_MINS
 
-    flow = ((WATER_FLOW_SENSOR_PULSES * gap) + WFS_CONST_SUM) / WFS_CONST_SUM
+    flow = ((WATER_FLOW_SENSOR_PULSES * gap) + WFS_CONST_SUM) / WFS_CONST_DIV
     WATER_FLOW_SENSOR_PULSES = 0
+
+    # Development purposes only
+    flow = float(random.randint(0, 100))
+
+    if flow != 0:
+        CONTINUOUS_WATER_FLOW_MINS += (1 / WATER_FLOW_SENSOR_MEASUREMENT_FREQUENCY) / 60
+    else:
+        CONTINUOUS_WATER_FLOW_MINS = 0
 
     return flow
 
-# def measure_water_flow() -> int:
-#     '''
-#     Measure the water flow
-#     '''
-#     return random.randint(0, 100)
-
 def automatic(func):
-    # define the inner function 
-    def inner(electricity:bool, watering:bool):
-        # add some additional behavior to decorated function
-        if watering or electricity:
+
+    def automatic_control_main_water_valve():
+        global CONTINUOUS_WATER_FLOW_MINS
+
+        electricity = ELECTRICITY_SIGNAL.read()
+        watering = WATERING_ANY.status()
+        if watering:
+            valve_open = True
+        elif electricity and CONTINUOUS_WATER_FLOW_MINS < MAX_CONTINUOUS_WATER_FLOW_MINS:
             valve_open = True
         else:
             valve_open = False
 
-        # call original function
         func(valve_open)
-    # return the inner function
-    return inner
+
+    return automatic_control_main_water_valve
 
 def control_main_water_valve(valve_open):
     '''
     
     '''
-    if valve_open:
-        MAIN_WATER_VALVE.activate()
-    else:
-        MAIN_WATER_VALVE.deactivate()
-    return
-
-# def automatic_control_main_water_valve(valve, electricity:bool, watering:bool) -> bool:
-#     '''
-#     Measure the water flow
-#     '''
-
-#     if watering or electricity:
-#         valve.activate()
-#     else:
-#         valve.deactivate()
+    if valve_open is not None:
+        if valve_open:
+            MAIN_WATER_VALVE.activate()
+        else:
+            MAIN_WATER_VALVE.deactivate()
+    return MAIN_WATER_VALVE.status()
+    
 
 def water_flow_measurement_daemon():
     '''
@@ -93,8 +98,7 @@ def water_flow_measurement_daemon():
 
         save_flow_measurement(current_dt, current_flow)
 
-        # automatic_control_main_water_valve(main_water_valve, False, False)
-        automatic(control_main_water_valve(False, False))()
+        automatic(control_main_water_valve)()
 
         pause(1 / WATER_FLOW_SENSOR_MEASUREMENT_FREQUENCY)
 
@@ -114,6 +118,7 @@ def historical_consumption_daemon():
         pause(60 * 60 * 12)
 
 WATER_FLOW_SENSOR_PULSES:int = 0
+CONTINUOUS_WATER_FLOW_MINS:float = 0
 
 # Create a daemon thread to keep the control of the scheduled programs
 water_flow_measurement_thread = threading.Thread(

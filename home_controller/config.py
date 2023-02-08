@@ -52,6 +52,8 @@ WFS_CONST_SUM:float = 0 #8
 WFS_CONST_DIV:float = 7.5 #6
 # Measure the water flow per second (Hz)
 WATER_FLOW_SENSOR_MEASUREMENT_FREQUENCY:float = 1 / 30
+# Max time in minutes that the water could flow continously
+MAX_CONTINUOUS_WATER_FLOW_MINS:int = 120
 
 # watering_controller module
 # ----------------------------------

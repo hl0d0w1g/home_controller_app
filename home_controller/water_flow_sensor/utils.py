@@ -11,12 +11,12 @@ from home_controller.utils import (
 )
 
 
-def save_flow_measurement(datetime:str, flow:int) -> None:
+def save_flow_measurement(datetime:str, flow:float) -> None:
     '''
     Save last flow measurement
     '''
     assert isinstance(datetime, str)
-    assert isinstance(flow, int)
+    assert isinstance(flow, float)
 
     with open(FLOW_24H_FILE, 'a+', encoding='utf-8') as flowf:
         data = flowf.readlines()

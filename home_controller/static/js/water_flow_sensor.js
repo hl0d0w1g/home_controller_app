@@ -46,6 +46,8 @@ function displayDate() {
     document.getElementById('dateTime').innerHTML = year + "/" + month + "/" + day + "  " + hour + ":" + minute;
 }
 
+setInterval(mainValveStatus, 15000);
+
 function mainValveStatus() {
     var mainValveButtonStatus = httpGet('/main-water-valve');
     document.getElementById('mainValveButton').checked = mainValveButtonStatus;
@@ -83,7 +85,7 @@ const flowChart = new Chart(flowctx, {
             y: {
                 title: {
                     display: true,
-                    text: 'Flujo (L/s)'
+                    text: 'Flujo (L/min)'
                 }
             }
         },
