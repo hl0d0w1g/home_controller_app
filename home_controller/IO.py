@@ -1,20 +1,27 @@
 """
-
+Input/Output variables for the whole app
 """
 
-from home_controller.rpi_pin import RpiPin
+from home_controller.rpi_pin import RpiPinIn, RpiPinOut
 from home_controller.config import (
     MAIN_WATER_VALVE_PIN, WATER_FLOW_SENSOR_PIN, ELECTRICITY_SIGNAL_PIN,
     WATERING_PIN_0, WATERING_PIN_1, WATERING_PIN_2, WATERING_PIN_3,
     WATERING_PIN_ANY
 )
 
-MAIN_WATER_VALVE = RpiPin(MAIN_WATER_VALVE_PIN, False)
-WATER_FLOW_SENSOR = RpiPin(WATER_FLOW_SENSOR_PIN, True, True)
-ELECTRICITY_SIGNAL = RpiPin(ELECTRICITY_SIGNAL_PIN, True)
+# water_intake module
+# ----------------------------------
+MAIN_WATER_VALVE = RpiPinOut(MAIN_WATER_VALVE_PIN)
+WATER_FLOW_SENSOR = RpiPinIn(WATER_FLOW_SENSOR_PIN, True)
+ELECTRICITY_SIGNAL = RpiPinIn(ELECTRICITY_SIGNAL_PIN)
 
-WATERING_0 = RpiPin(WATERING_PIN_0, False)
-WATERING_1 = RpiPin(WATERING_PIN_1, False)
-WATERING_2 = RpiPin(WATERING_PIN_2, False)
-WATERING_3 = RpiPin(WATERING_PIN_3, False)
-WATERING_ANY = RpiPin(WATERING_PIN_ANY, False)
+# watering_controller module
+# ----------------------------------
+# Each circuit is represented by 4 pins (in binary) plus a
+# 5th pin that is used to flag if any circuit is activated.
+# MSB 0 bit numbering
+WATERING_0 = RpiPinOut(WATERING_PIN_0)
+WATERING_1 = RpiPinOut(WATERING_PIN_1)
+WATERING_2 = RpiPinOut(WATERING_PIN_2)
+WATERING_3 = RpiPinOut(WATERING_PIN_3)
+WATERING_ANY = RpiPinOut(WATERING_PIN_ANY)

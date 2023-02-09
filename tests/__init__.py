@@ -1,6 +1,7 @@
 """
 Testing module for whole home_controller package.
 """
+# python3 -m unittest -v
 
 # import os
 # import sys

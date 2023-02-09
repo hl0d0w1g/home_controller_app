@@ -1,6 +1,6 @@
-'''
-Flask routes for the watering_controller
-'''
+"""
+Home app web routes
+"""
 
 from flask import render_template # pylint: disable=import-error
 from home_controller import app
@@ -10,9 +10,9 @@ from home_controller import app
 @app.route('/index')
 def homepage():
     '''
-    Homepage page
+    Homepage template
     '''
     return render_template('index.html')
 
 from .watering_controller import routes as watering_controller_routes
-from .water_flow_sensor import routes as water_flow_sensor_routes
+from .water_intake import routes as water_intake_routes

@@ -1,13 +1,12 @@
 """
-
+Configuration variables and constants for the whole app.
 """
 
 ####################################
 #           RPI I/O Pins           #
-#     Namespace of the webapp      #
 ####################################
 
-# water_flow_sensor module
+# water_intake module
 # ----------------------------------
 # Raspberry Pi GPIO pin number for the water flow sensor
 WATER_FLOW_SENSOR_PIN:int = 4
@@ -32,9 +31,9 @@ WATERING_PIN_ANY:int = 21 # HIGH is used to flag if any circuit is activated, LO
 #            NAMESPACES            #
 ####################################
 
-# water_flow_sensor module
+# water_intake module
 # ----------------------------------
-WATER_FLOW_SENSOR_NAMESPACE:str = '/water-flow-sensor'
+WATER_INTAKE_NAMESPACE:str = '/water-intake'
 
 # watering_controller module
 # ----------------------------------
@@ -45,19 +44,19 @@ WATERING_NAMESPACE:str = '/watering-controller'
 #            CONSTANTS             #
 ####################################
 
-# water_flow_sensor module
+# water_intake module
 # ----------------------------------
 # Water flow sensor constants for flow calc in L/m
-WFS_CONST_SUM:float = 0 #8
-WFS_CONST_DIV:float = 7.5 #6
-# Measure the water flow per second (Hz)
+WFS_CONST_SUM:float = 0 
+WFS_CONST_DIV:float = 7.5 
+# Frequency of water flow measurement per second (Hz)
 WATER_FLOW_SENSOR_MEASUREMENT_FREQUENCY:float = 1 / 30
-# Max time in minutes that the water could flow continously
+# Max time in minutes that the water could flow continuously
 MAX_CONTINUOUS_WATER_FLOW_MINS:int = 120
 
 # watering_controller module
 # ----------------------------------
-# Number of programs
+# Number of available programs
 WATERING_N_PROGRAMS:int = 3
-# Number of circuits
+# Number of available circuits
 WATERING_N_CIRCUITS:int = 12

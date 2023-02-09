@@ -1,0 +1,3 @@
+"""
+Water intake module entrypoint
+"""

@@ -1,6 +1,6 @@
-'''
-Utils
-'''
+"""
+Useful functions for the whole app
+"""
 
 import os
 import time
@@ -8,14 +8,14 @@ import re
 import datetime
 from typing import Union
 # import logging
-from schema import SchemaError # pylint: disable=import-error
+from schema import Schema, SchemaError # pylint: disable=import-error
 
 from home_controller import socketio
 
-# Abreviations for the days of the week in spanish
+# Abbreviations for the days of the week in Spanish
 SPANISH_WEEKDAYS_SHORT:set = set({'L', 'M', 'X', 'J', 'V', 'S', 'D'})
-# Regex pattern for the hour string
-HOUR_RE_PATTERN = re.compile("^([01]?[0-9]|2[0-3]):[0-5][0-9]")
+# Regex pattern for the time string
+TIME_RE_PATTERN = re.compile("^([01]?[0-9]|2[0-3]):[0-5][0-9]")
 # Datetime string format
 DATETIME_FMT:str = '%Y-%m-%d %H:%M:%S'
 
@@ -27,17 +27,36 @@ DATETIME_FMT:str = '%Y-%m-%d %H:%M:%S'
 #                     level=logging.WARNING)
 
 
-def pause(secs:float) -> None:
+def pause(secs:Union[int, float]) -> None:
     '''
     Delay execution for a given number of seconds. The argument may be a
-    floating point number for subsecond precision.
+    floating point number for sub second precision.
+
+    Args:
+    - secs (int, float): Number of seconds to pause
+
+    Return:
+    - None
     '''
+    assert isinstance(secs, (int, float)), 'You should provide int or float instead'
     time.sleep(secs)
 
 def get_datetime(timedelta:dict=None, in_str:bool=False) -> Union[datetime.datetime, str]:
     '''
-    Returns the specefied datetime
+    Returns the current datetime plus the specified time delta
+
+    Args:
+    - timedelta (dict): Timedelta to add in dict format {"days": d, "seconds": s, ...}
+    - in_str (bool): If the datetime should be returned in string or datetime type
+
+    Return:
+    - datetime (datetime.datetime, str): Current datetime plus provided timedelta
     '''
+    assert isinstance(timedelta, dict), \
+        '''You should provide a time delta in format: {"days": d, "seconds": s, ...}. 
+        More info: https://docs.python.org/es/3/library/datetime.html#timedelta-objects'''
+    assert isinstance(in_str, bool), 'You should provide a boolean'
+
     now = datetime.datetime.now()
 
     if timedelta:
@@ -48,7 +67,7 @@ def get_datetime(timedelta:dict=None, in_str:bool=False) -> Union[datetime.datet
         
     return now
 
-def read_env_varaible(name:str, default:str) -> str:
+def read_env_variable(name:str, default:str) -> str:
     '''
     Read an environment variable
 
@@ -59,21 +78,22 @@ def read_env_varaible(name:str, default:str) -> str:
     Return:
     - value (str): Value of the environment variable if it is set, default otherwise
     '''
-    assert isinstance(name, str)
-    assert isinstance(default, str)
+    assert isinstance(name, str), 'You should provide a string'
+    assert isinstance(default, str), 'You should provide a string'
 
     env_var = os.getenv(name, default=default)
 
     return env_var
 
-def logging(message:str, level:str='INFO', source:str='', source_module:str='logs') -> None:
+def logging(message:str, source_module:str, source_function:str, level:str='INFO') -> None:
     '''
-    Adds a new log into the log file
+    Prints log and add it into the log file
 
     Args:
     - message (str): Message to be saved into log file
-    - level (str): Importance level of the log
-    - source (str): Source file of the log
+    - source_module (str): Source module of the log
+    - source_function (str): Source function of the log
+    - level (str): Importance level of the log. Default: INFO
 
     Return:
     - None
@@ -82,8 +102,12 @@ def logging(message:str, level:str='INFO', source:str='', source_module:str='log
     #     logging.info(f'({source}) {message}')
     # elif level == 'WARNING':
     #     logging.warning(f'({source}) {message}')
+    assert isinstance(message, str)
+    assert isinstance(source_module, str)
+    assert isinstance(source_function, str)
+    assert isinstance(level, str)
 
-    log_msg = f'[{get_datetime(in_str=True)}] - [{level}] ({source}) {message}'
+    log_msg = f'[{get_datetime(in_str=True)}] - [{level}] ({source_module}/{source_function}) {message}'
 
     print(log_msg)
 
@@ -99,34 +123,56 @@ def socket_emit(route:str, message:dict, namespace:str='/') -> None:
     Args:
     - route (str): Route where send the message
     - message (dict): Dictionary with params to be sent
+    - namespace (str): Namespace through which the message is emitted
 
     Return:
     - None
     '''
+    assert isinstance(route, str)
+    assert isinstance(message, str)
+    assert isinstance(namespace, str)
     socketio.emit(route, message, namespace=namespace)
 
-def hour_str_to_time(hour:str) -> datetime.time:
+def time_str_to_time(time:str) -> datetime.time:
     '''
-    Returns a datetime.time object from a string with the hour with format HH:MM
+    Returns a datetime.time object from a string with the time in format HH:MM
+
+    Args:
+    - time (str): String time to be converted into datetime type
+
+    Return:
+    - time (datetime.time)
     '''
-    assert(isinstance(hour, str) and len(hour) == 5 and HOUR_RE_PATTERN.match(hour) is not None)
+    assert(isinstance(time, str) and len(time) == 5 and TIME_RE_PATTERN.match(time) is not None), \
+        'Time should be provided as string in format HH:MM'
 
-    return datetime.time.fromisoformat(hour)
+    return datetime.time.fromisoformat(time)
 
-def check_object_schema(obj_schema, obj) -> bool:
+def check_object_schema(obj_schema:Schema, obj:dict) -> bool:
     '''
     Check if an object is valid according to a schema
+
+    Args:
+    - obj_schema (Schema): Schema that the object must fit
+    - obj (dict): Object to check
+
+    Return:
+    - Check result (bool)
     '''
+    assert isinstance(obj_schema, Schema)
+    assert isinstance(obj, dict)
+
     try:
         obj_schema.validate(obj)
         return True
     except SchemaError as error:
         logging(
             error,
-            source='home_controller/utils/check_object_schema',
-            source_module='home_controller'
+            source_module='home_controller',
+            source_function='utils/check_object_schema'
         )
         return False
 
 
-LOG_FILEs_DIR:str = read_env_varaible('LOGS_DIR', 'logs')
+# Directory where all the logs will be saved
+LOG_FILEs_DIR:str = read_env_variable('LOGS_DIR', 'logs')

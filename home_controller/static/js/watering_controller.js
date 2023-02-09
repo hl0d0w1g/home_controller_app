@@ -1,3 +1,6 @@
+// Namespace of the watering controller module
+const WATERING_NAMESPACE = '/watering-controller'
+
 // Time to execute each circuit in a manual execution
 var circuitsTime = 0;
 
@@ -49,7 +52,7 @@ socket.on('activated-circuits', function (data) {
 });
 
 // Socket.io programs activation feedback receiver
-socket.on('cancell-all', function (data) {
+socket.on('stop-watering', function (data) {
     clearAllProgramsButtons();
     lockAllButtons(false);
     clearAllCircuitsButtons();
@@ -109,7 +112,7 @@ function displayDate() {
 
 // Request programs configuration from backend
 function httpGetRequestPrograms() {
-    var programs = httpGet('/programs')
+    var programs = httpGet(WATERING_NAMESPACE + '/programs')
 
     for (let id in programs){
         createProgramTableRow(id, programs[id]);
@@ -235,7 +238,7 @@ function circuitsTimeOnInput() {
 
 // Function to be executed when a program button is clicked
 function programButtonOnClick(id) {
-    httpGet('/program/' + id, async=true);
+    httpGet(WATERING_NAMESPACE + '/program/' + id, async=true);
 }
 
 // Change style from a program button to show it ativated 
@@ -247,7 +250,7 @@ function programButtonActivated(id) {
 
 // Function to be executed when a circuit button is clicked
 function circuitButtonOnClick(id) {
-    httpGet('/circuit/' + id + '/' + circuitsTime, async=true);
+    httpGet(WATERING_NAMESPACE + '/circuit/' + id + '/' + circuitsTime, async=true);
 }
 
 // Change style from a circuit button to show it ativated 
@@ -308,7 +311,7 @@ function lockAllButtons(lock) {
 // Function to be executed when cancel button is clicked
 function cancelButtonOnClick() {
     hideCancelButton(true);
-    httpGet('/cancel');
+    httpGet(WATERING_NAMESPACE + '/cancel');
 }
 
 // Hide or show cancel button
@@ -318,5 +321,5 @@ function hideCancelButton(hide) {
 }
 
 document.getElementById('buttonEditPrograms').onclick = function () {
-    location.href = '/watering-controller-edit-programs';
+    location.href = WATERING_NAMESPACE + '/edit-programs';
 };

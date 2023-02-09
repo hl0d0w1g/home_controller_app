@@ -1,5 +1,5 @@
 """
-Controller of water flow sensor
+Controller functions of the water intake
 """
 
 import random

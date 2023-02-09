@@ -1,3 +1,3 @@
-'''
-Watering controller app
-'''
+"""
+Watering controller module entrypoint
+"""

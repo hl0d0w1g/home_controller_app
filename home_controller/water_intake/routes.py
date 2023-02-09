@@ -1,19 +1,18 @@
-'''
-Flask routes for the watering_controller
-'''
+"""
+Water intake module web routes
+"""
 
 from flask import render_template, request, jsonify # pylint: disable=import-error
-# from flask_socketio import emit # pylint: disable=import-error
 
 from home_controller import app #, socketio
-from home_controller.config import WATER_FLOW_SENSOR_NAMESPACE
+from home_controller.config import WATER_INTAKE_NAMESPACE
 from home_controller.utils import logging
 
 from . import controller
 from .utils import read_flow_measurement, read_historical_consumption
 
 # # --- SOCKETS ---
-# @socketio.on('connect', namespace=WATER_FLOW_SENSOR_NAMESPACE)
+# @socketio.on('connect', namespace=WATER_INTAKE_NAMESPACE)
 # def water_flow_sensor_socket_connect():
 #     '''
 #     Socket connect event
@@ -24,7 +23,7 @@ from .utils import read_flow_measurement, read_historical_consumption
 #         source_module='watering_controller'
 #     )
 
-# @socketio.on('disconnect', namespace=WATER_FLOW_SENSOR_NAMESPACE)
+# @socketio.on('disconnect', namespace=WATER_INTAKE_NAMESPACE)
 # def water_flow_sensor_socket_disconnect():
 #     '''
 #     Socket disconnect event
@@ -36,7 +35,7 @@ from .utils import read_flow_measurement, read_historical_consumption
 #     )
 
 # --- ROUTES ---
-@app.route(WATER_FLOW_SENSOR_NAMESPACE)
+@app.route(WATER_INTAKE_NAMESPACE)
 def water_flow_sensor_homepage():
     '''
     Watering controller main page

@@ -1,6 +1,6 @@
-'''
-Controller functions
-'''
+"""
+Controller functions of the watering module
+"""
 
 import threading
 import signal
@@ -15,25 +15,43 @@ from .utils import save_watering_config, read_watering_config, weekday_time_comb
 
 def init_program(idx:int) -> None:
     '''
-    Init program
-    '''
-    assert(isinstance(idx, int) and 1 <= idx <= WATERING_N_PROGRAMS)
+    Init program by id
 
+    Args
+    - idx (int): Identifier of the program to initiate
+
+    Return
+    - None
+    '''
+    assert(isinstance(idx, int) and 1 <= idx <= WATERING_N_PROGRAMS), \
+            'Provide an integer program id between 1 and ' + str(WATERING_N_PROGRAMS)
+
+    # Deactivate STOP_WATERING flag
     resume_watering()
 
+    # Create the program and execute it within a thread
     program = ScheduledProgram(idx, 'L', '00:00')
     threading.Thread(target=program.execute, args=(is_watering_stopped,)).start()
 
 def init_circuit(idx:int, mins:int) -> None:
     '''
-    Execute the circuit by the indicated mins
-    '''
-    assert(isinstance(idx, int) and 1 <= idx <= WATERING_N_CIRCUITS)
-    assert(isinstance(mins, int) and mins >= 0)
+    Execute circuit by id during the indicated mins
 
+    Args:
+    - idx (int): Identifier of the program to initiate
+    - mins (int): Minutes during which the circuit is active 
+
+    Return:
+    - None
+    '''
+    assert(isinstance(idx, int) and 1 <= idx <= WATERING_N_CIRCUITS), \
+            'Provide an integer circuit id between 1 and ' + str(WATERING_N_CIRCUITS)
+    assert(isinstance(mins, int) and mins >= 0), 'Provide a valid integer of minutes'
+
+    # Deactivate STOP_WATERING flag
     resume_watering()
 
-    # Create a program of only one circuit
+    # Create a program of only one circuit and execute it within a thread
     circuit_program = Program({idx: mins})
     threading.Thread(target=circuit_program.execute, args=(is_watering_stopped,)).start()
 
@@ -49,9 +67,10 @@ def close_all_circuits() -> None:
     '''
     logging(
         'Deactivating all',
-        source='watering_controller/controller/close_all_circuits',
-        source_module='watering_controller'
+        source_module='watering_controller',
+        source_function='controller/close_all_circuits'
     )
+
     watering_pins = [
         WATERING_3,
         WATERING_2,
@@ -63,18 +82,25 @@ def close_all_circuits() -> None:
     for pin in watering_pins:
         logging(
             f'Pin {pin.pin} deactivated',
-            source='watering_controller/controller/close_all_circuits',
-            source_module='watering_controller'
+            source_module='watering_controller',
+            source_function='controller/close_all_circuits'
         )
         pin.deactivate()
 
-def new_programs_config(config:dict) -> None:
+def new_scheduled_programs_config(config:dict) -> None:
     '''
-    Update the list of programs
+    Update the list of scheduled programs
+
+    Args:
+    - config (dict): Watering configuration dictionary
+
+    Return:
+    - None
     '''
+    assert isinstance(config, dict)
+
     scheduled_programs = create_scheduled_programs(config)
     update_scheduled_programs(scheduled_programs)
-
     save_watering_config(config)
 
 def create_scheduled_programs(config:dict) -> list:
@@ -106,32 +132,11 @@ def create_scheduled_programs(config:dict) -> list:
 
     logging(
         f'Creating scheduled_programs: {scheduled_programs_ls}',
-        source='watering_controller/controller/create_scheduled_programs',
-        source_module='watering_controller'
+        source_module='watering_controller',
+        source_function='controller/create_scheduled_programs'
     )
 
     return scheduled_programs_ls
-
-# def check_scheduled_programs(scheduled_programs:list) -> int:
-#     '''
-#     Check if any task needs to be executed
-
-#     Args:
-#     - scheduled_programs (list(ScheduledProgram)): List of ScheduledProgram objects
-
-#     Return:
-#     - task_idx (int): Index of the ScheduledProgram object to be executed
-#     '''
-#     assert isinstance(scheduled_programs, list)
-
-#     task_idx = None
-
-#     for idx, task in enumerate(scheduled_programs):
-#         if task.check_schedule():
-#             task_idx = idx
-#             break
-
-#     return task_idx
 
 def update_scheduled_programs(new_scheduled_programs:list) -> None:
     '''
@@ -143,6 +148,8 @@ def update_scheduled_programs(new_scheduled_programs:list) -> None:
     Return:
     - None
     '''
+    assert isinstance(new_scheduled_programs, list)
+    
     global SCHEDULED_PROGRAMS
     SCHEDULED_PROGRAMS = new_scheduled_programs
 
@@ -163,27 +170,25 @@ def scheduled_programs_daemon():
     while True:
         program_to_execute = next((p for p in SCHEDULED_PROGRAMS if p.check_schedule()), None)
         if program_to_execute is not None:
-            # task = SCHEDULED_PROGRAMS[task_to_execute]
-            # task_to_execute.execute()
             logging(
                 f'Executing Program: {program_to_execute}',
-                source='watering_controller/controller/scheduled_programs_daemon',
-                source_module='watering_controller'
+                source_module='watering_controller',
+                source_function='controller/scheduled_programs_daemon'
             )
             threading.Thread(target=program_to_execute.execute, args=(is_watering_stopped,)).start()
             pause(60)
         else:
             pause(15)
 
-        # if STOP_WATERING:
-        #     pause(60)
-        #     resume_watering()
-        # else:
-        #     pause(15)
-
 def is_watering_stopped() -> bool:
     '''
     Return True if the watering should be stopped, False otherwise
+
+    Args:
+    - None
+
+    Return:
+    - None
     '''
     return STOP_WATERING
 
@@ -200,11 +205,11 @@ def stop_watering() -> None:
     global STOP_WATERING
     STOP_WATERING = True
 
-    socket_emit('cancell-all', {}, WATERING_NAMESPACE)
+    socket_emit('stop-watering', {}, WATERING_NAMESPACE)
 
 def resume_watering() -> None:
     '''
-    Set to false the cancel flag
+    Set to false the STOP_WATERING flag
 
     Args:
     - None:
@@ -215,19 +220,26 @@ def resume_watering() -> None:
     global STOP_WATERING
     STOP_WATERING = False
 
-def gracefully_stop(signal_number, frame):
+def gracefully_stop(signal_number:int, frame) -> None:
     '''
     Managing signals to close all circuits before continue
+
+    Args:
+    - signal_number (int): Signal id which is been captured
+    - frame (None, Frame): The current stack frame
+
+    Return:
+    - None
     '''
     logging(
         f'Signal received: {signal_number}; Frame: {frame}',
-        source='watering_controller/controller/gracefully_stop',
-        source_module='watering_controller'
+        source_module='watering_controller',
+        source_function='controller/gracefully_stop'
     )
     logging(
         'Terminating the process',
-        source='watering_controller/controller/gracefully_stop',
-        source_module='watering_controller'
+        source_module='watering_controller',
+        source_function='controller/gracefully_stop'
     )
 
     close_all_circuits()
@@ -235,8 +247,9 @@ def gracefully_stop(signal_number, frame):
     raise SystemExit(f'[{get_datetime(in_str=True)}] - [HOME APP] Gracefully stopping...')
 
 
+# Flag to stop watering if is requested by the user
 STOP_WATERING:bool = False
-
+# List for the programmed scheduled programs by the user
 SCHEDULED_PROGRAMS:list = []
 
 # Close all circuits as sanity check

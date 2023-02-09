@@ -1,15 +1,14 @@
-'''
-Utils
-'''
+"""
+Useful functions for the watering controller module
+"""
 
 import json
-import os
 import itertools
 from schema import Schema, And, Use # pylint: disable=import-error
 
 from home_controller.config import WATERING_N_CIRCUITS, WATERING_N_PROGRAMS
 from home_controller.utils import (
-    logging, check_object_schema, read_env_varaible,
+    logging, check_object_schema, read_env_variable,
     SPANISH_WEEKDAYS_SHORT, HOUR_RE_PATTERN
 )
 
@@ -42,7 +41,7 @@ WATERING_CONFIG_SCHEMA = Schema({
 
 def weekday_time_combinations(days:list, times:list) -> list:
     '''
-    Returns a list with the hour and day of the week for each combination of days and times
+    Returns a list with the time and day of the week for each combination of days and times
 
     Args:
     - days (list): List of days of the week
@@ -64,12 +63,12 @@ def read_watering_config() -> dict:
     - None
 
     Return:
-    - config (dict): Watering configuration readed from disk
+    - config (dict): Watering configuration read from disk
     '''
     logging(
         'Reading watering configuration from disk',
-        source='watering_controller/utils/read_watering_config',
-        source_module='watering_controller'
+        source_module='watering_controller',
+        source_function='utils/read_watering_config'
     )
 
     with open(
@@ -91,14 +90,14 @@ def save_watering_config(config:dict) -> bool:
     - config (dict): Watering configuration dictionary
 
     Return:
-    - Save opetation status. True if successful, False otherwise.
+    - Save operation status. True if successful, False otherwise.
     '''
     assert isinstance(config, dict)
     assert check_object_schema(WATERING_CONFIG_SCHEMA, config)
     logging(
         'Saving watering configuration to disk',
-        source='watering_controller/utils/save_watering_config',
-        source_module='watering_controller'
+        source_module='watering_controller',
+        source_function='utils/save_watering_config'
     )
 
     try:
@@ -115,4 +114,5 @@ def save_watering_config(config:dict) -> bool:
         return False
 
 
-WATERING_CONFIG_FILE:str = read_env_varaible('CONFIG_DIR', './config') + '/watering_config.json'
+# File where all the scheduled programs are stored in disk
+WATERING_CONFIG_FILE:str = read_env_variable('CONFIG_DIR', './config') + '/watering_config.json'

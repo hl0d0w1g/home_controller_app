@@ -1,12 +1,13 @@
-'''
-Utils
-'''
+"""
+Useful functions for the water intake module
+"""
+
 import os
 import pandas as pd
 
 from home_controller.config import WATER_FLOW_SENSOR_MEASUREMENT_FREQUENCY
 from home_controller.utils import (
-    logging, read_env_varaible, get_datetime,
+    logging, read_env_variable, get_datetime,
     DATETIME_FMT
 )
 
@@ -135,5 +136,5 @@ def read_historical_consumption(period:str) -> dict:
     return historical_consumption_data
 
 
-FLOW_24H_FILE:str = read_env_varaible('DATA_DIR', './data') + '/flow_24h.csv'
-CONSUMPTION_FILE:str = read_env_varaible('DATA_DIR', './data') + '/consumption.csv'
+FLOW_24H_FILE:str = read_env_variable('DATA_DIR', './data') + '/flow_24h.csv'
+CONSUMPTION_FILE:str = read_env_variable('DATA_DIR', './data') + '/consumption.csv'
