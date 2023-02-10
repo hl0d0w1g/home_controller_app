@@ -9,63 +9,81 @@ from home_controller.config import WATER_INTAKE_NAMESPACE
 from home_controller.utils import logging
 
 from . import controller
-from .utils import read_flow_measurement, read_historical_consumption
+from .utils import read_flow_measurement#, read_historical_consumption
 
 # # --- SOCKETS ---
 # @socketio.on('connect', namespace=WATER_INTAKE_NAMESPACE)
-# def water_flow_sensor_socket_connect():
+# def water_intake_socket_connect():
 #     '''
 #     Socket connect event
 #     '''
 #     logging(
 #         'Web client connected',
-#         source='water_flow_sensor/routes/socket_connect',
-#         source_module='watering_controller'
+#         source_module='water_intake',
+#         source_function='routes/socket_connect'
 #     )
 
 # @socketio.on('disconnect', namespace=WATER_INTAKE_NAMESPACE)
-# def water_flow_sensor_socket_disconnect():
+# def water_intake_socket_disconnect():
 #     '''
 #     Socket disconnect event
 #     '''
 #     logging(
 #         'Web client disconnected',
-#         source='water_flow_sensor/routes/socket_disconnect',
-#         source_module='watering_controller'
+#         source_module='water_intake',
+#         source_function='routes/socket_disconnect'
 #     )
 
 # --- ROUTES ---
 @app.route(WATER_INTAKE_NAMESPACE)
-def water_flow_sensor_homepage():
+def water_intake_homepage():
     '''
-    Watering controller main page
+    Water intake homepage
+    
+    Args:
+    - None
+    Return:
+    - None
     '''
-    return render_template('water_flow_sensor.html')
+    return render_template('water_intake.html')
 
-@app.route('/flow-sensor-data', methods=['GET'])
-def water_flow_sensor_get_flow_sensor_data():
+@app.route(f'{WATER_INTAKE_NAMESPACE}/flow-sensor-data', methods=['GET'])
+def water_intake_get_flow_sensor_data():
     '''
-    Get all the programs
+    Get the water flow measured by the sensor
+
+    Args:
+    - None
+    Return:
+    - None
     '''
     n_data_points = request.args.get('data-points', default=1, type=int)
     return jsonify(read_flow_measurement(n_data_points))
 
-@app.route('/historical-consumption-data', methods=['GET'])
-def water_flow_sensor_get_historical_consumption_data():
-    '''
-    Get all the programs
-    '''
-    period = request.args.get('period', default=1, type=str)
-    return jsonify(read_historical_consumption(period))
+# @app.route(f'{WATER_INTAKE_NAMESPACE}/historical-consumption-data', methods=['GET'])
+# def water_intake_get_historical_consumption_data():
+#     '''
+#     Get the water consumption (aggregate flow data)
 
-@app.route('/main-water-valve', methods=['GET'])
-def water_flow_sensor_main_water_valve():
-    '''
-    Get all the programs
-    '''
+#     Args:
+#     - None
+#     Return:
+#     - None
+#     '''
+#     period = request.args.get('period', default=1, type=str)
+#     return jsonify(read_historical_consumption(period))
 
+@app.route(f'{WATER_INTAKE_NAMESPACE}/main-water-valve', methods=['GET'])
+def water_intake_main_water_valve():
+    '''
+    Control the main water valve status by a query param
+
+    Args:
+    - None
+    Return:
+    - None
+    '''
     valve_status = request.args.get('status', default='', type=str)
     valve_status = None if not valve_status else True if valve_status == 'true' else False
     valve_status = controller.control_main_water_valve(valve_status)
-
     return str(valve_status).lower()

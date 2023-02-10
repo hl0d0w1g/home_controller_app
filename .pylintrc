@@ -4,3 +4,4 @@ disable=wrong-import-position,
         unused-import,
         global-statement,
         cyclic-import,
+        line-too-long

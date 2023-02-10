@@ -41,7 +41,7 @@ def pause(secs:Union[int, float]) -> None:
     assert isinstance(secs, (int, float)), 'You should provide int or float instead'
     time.sleep(secs)
 
-def get_datetime(timedelta:dict=None, in_str:bool=False) -> Union[datetime.datetime, str]:
+def get_datetime(timedelta:Union[dict, None]=None, in_str:bool=False) -> Union[datetime.datetime, str]:
     '''
     Returns the current datetime plus the specified time delta
 
@@ -52,7 +52,7 @@ def get_datetime(timedelta:dict=None, in_str:bool=False) -> Union[datetime.datet
     Return:
     - datetime (datetime.datetime, str): Current datetime plus provided timedelta
     '''
-    assert isinstance(timedelta, dict), \
+    assert isinstance(timedelta, (dict, type(None))), \
         '''You should provide a time delta in format: {"days": d, "seconds": s, ...}. 
         More info: https://docs.python.org/es/3/library/datetime.html#timedelta-objects'''
     assert isinstance(in_str, bool), 'You should provide a boolean'
@@ -64,7 +64,7 @@ def get_datetime(timedelta:dict=None, in_str:bool=False) -> Union[datetime.datet
 
     if in_str:
         return now.strftime(DATETIME_FMT)
-        
+
     return now
 
 def read_env_variable(name:str, default:str) -> str:
@@ -102,10 +102,10 @@ def logging(message:str, source_module:str, source_function:str, level:str='INFO
     #     logging.info(f'({source}) {message}')
     # elif level == 'WARNING':
     #     logging.warning(f'({source}) {message}')
-    assert isinstance(message, str)
-    assert isinstance(source_module, str)
-    assert isinstance(source_function, str)
-    assert isinstance(level, str)
+    assert isinstance(message, str), 'You should provide a string'
+    assert isinstance(source_module, str), 'You should provide a string'
+    assert isinstance(source_function, str), 'You should provide a string'
+    assert isinstance(level, str), 'You should provide a string'
 
     log_msg = f'[{get_datetime(in_str=True)}] - [{level}] ({source_module}/{source_function}) {message}'
 
@@ -128,12 +128,12 @@ def socket_emit(route:str, message:dict, namespace:str='/') -> None:
     Return:
     - None
     '''
-    assert isinstance(route, str)
-    assert isinstance(message, str)
-    assert isinstance(namespace, str)
+    assert isinstance(route, str), 'You should provide a string'
+    assert isinstance(message, str), 'You should provide a string'
+    assert isinstance(namespace, str), 'You should provide a string'
     socketio.emit(route, message, namespace=namespace)
 
-def time_str_to_time(time:str) -> datetime.time:
+def time_str_to_time(time_str:str) -> datetime.time:
     '''
     Returns a datetime.time object from a string with the time in format HH:MM
 
@@ -143,10 +143,10 @@ def time_str_to_time(time:str) -> datetime.time:
     Return:
     - time (datetime.time)
     '''
-    assert(isinstance(time, str) and len(time) == 5 and TIME_RE_PATTERN.match(time) is not None), \
+    assert(isinstance(time_str, str) and len(time_str) == 5 and TIME_RE_PATTERN.match(time_str) is not None), \
         'Time should be provided as string in format HH:MM'
 
-    return datetime.time.fromisoformat(time)
+    return datetime.time.fromisoformat(time_str)
 
 def check_object_schema(obj_schema:Schema, obj:dict) -> bool:
     '''

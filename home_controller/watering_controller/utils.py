@@ -9,7 +9,7 @@ from schema import Schema, And, Use # pylint: disable=import-error
 from home_controller.config import WATERING_N_CIRCUITS, WATERING_N_PROGRAMS
 from home_controller.utils import (
     logging, check_object_schema, read_env_variable,
-    SPANISH_WEEKDAYS_SHORT, HOUR_RE_PATTERN
+    SPANISH_WEEKDAYS_SHORT, TIME_RE_PATTERN
 )
 
 
@@ -31,7 +31,7 @@ WATERING_CONFIG_SCHEMA = Schema({
                 'activated': Use(bool),
                 'hour': And(
                     Use(str),
-                    lambda n: len(n) == 5 and HOUR_RE_PATTERN.match(n) is not None
+                    lambda n: len(n) == 5 and TIME_RE_PATTERN.match(n) is not None
                 ),
             }
         }
@@ -51,8 +51,8 @@ def weekday_time_combinations(days:list, times:list) -> list:
     - combinations (list): List with the hour and day of the week
                             for each combination of days and times
     '''
-    assert isinstance(days, list)
-    assert isinstance(times, list)
+    assert isinstance(days, list), 'You should provide a list of days'
+    assert isinstance(times, list), 'You should provide a list of times'
     return list(itertools.product(days, times))
 
 def read_watering_config() -> dict:
@@ -92,8 +92,9 @@ def save_watering_config(config:dict) -> bool:
     Return:
     - Save operation status. True if successful, False otherwise.
     '''
-    assert isinstance(config, dict)
-    assert check_object_schema(WATERING_CONFIG_SCHEMA, config)
+    assert isinstance(config, dict), 'You should provide a config dictionary'
+    assert check_object_schema(WATERING_CONFIG_SCHEMA, config), \
+        'You should provide a programs configuration dictionary with a valid schema'
     logging(
         'Saving watering configuration to disk',
         source_module='watering_controller',

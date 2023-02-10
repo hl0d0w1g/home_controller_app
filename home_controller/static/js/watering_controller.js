@@ -75,8 +75,10 @@ window.onload = function () {
     httpGetRequestNCircuits();
 }
 
+// Update datetime every second
 setInterval(displayDate, 1000);
 
+// Display date and time in YY/MM/DD HH:MM format
 function displayDate() {
     current_date = new Date();
 

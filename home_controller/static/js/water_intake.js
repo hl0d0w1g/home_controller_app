@@ -1,16 +1,19 @@
+// Namespace of the watering controller module
+const WATERING_NAMESPACE = '/water-intake'
+
 const periodsSpanish = {'week': 'Semana', 'month': 'Mes', 'year': 'Año'}
 
-var socket = io(window.location.href);
+// var socket = io(window.location.href);
 
-// Socket.io connect receiver
-socket.on('connect', function () {
-    console.log("Websocket connected...!", socket.connected)
-});
+// // Socket.io connect receiver
+// socket.on('connect', function () {
+//     console.log("Websocket connected...!", socket.connected)
+// });
 
-// Socket.io connect error receiver
-socket.on('connect_error', (err) => {
-    console.log(`connect_error due to ${err.message}`);
-});
+// // Socket.io connect error receiver
+// socket.on('connect_error', (err) => {
+//     console.log(`connect_error due to ${err.message}`);
+// });
 
 window.onload = function () {
     displayDate();
@@ -28,8 +31,10 @@ function httpGet(url, async=false) {
     }
 }
 
+// Update datetime every second
 setInterval(displayDate, 1000);
 
+// Display date and time in YY/MM/DD HH:MM format
 function displayDate() {
     current_date = new Date();
 
@@ -46,20 +51,24 @@ function displayDate() {
     document.getElementById('dateTime').innerHTML = year + "/" + month + "/" + day + "  " + hour + ":" + minute;
 }
 
+// Updates de status of the main valve every 15secs
 setInterval(mainValveStatus, 15000);
 
+// Retrieve the status of the main valve from the backend
 function mainValveStatus() {
-    var mainValveButtonStatus = httpGet('/main-water-valve');
+    var mainValveButtonStatus = httpGet(WATERING_NAMESPACE + '/main-water-valve');
     document.getElementById('mainValveButton').checked = mainValveButtonStatus;
 }
 
+// Controls the status of the main valve button and send the status to the backend
 function mainValveButton() {
     var mainValveButtonStatus = document.getElementById('mainValveButton').checked;
     console.log(mainValveButtonStatus);
-    var mainValveButtonStatus = httpGet('/main-water-valve?status=' + mainValveButtonStatus);
+    var mainValveButtonStatus = httpGet(WATERING_NAMESPACE + '/main-water-valve?status=' + mainValveButtonStatus);
 
 }
 
+// Flow chart definition
 const flowctx = document.getElementById('flowChart').getContext('2d');
 const flowChart = new Chart(flowctx, {
     type: 'line',
@@ -101,10 +110,12 @@ const flowChart = new Chart(flowctx, {
     }
 });
 
+// Updates flow chart every 15secs
 setInterval(updateFlowChart, 15000);
 
+// Makes an HTTP GET request to retrieve the las 10 flow sensor data points and updates the flow chart with it
 function updateFlowChart() {
-    var flowData = httpGet('/flow-sensor-data?data-points=10');
+    var flowData = httpGet(WATERING_NAMESPACE + '/flow-sensor-data?data-points=10');
     flowChart.data.labels = flowData['datetime'];
     flowChart.data.datasets[0].data = flowData['flow'];
 

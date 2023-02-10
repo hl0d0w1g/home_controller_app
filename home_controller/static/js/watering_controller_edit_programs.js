@@ -1,8 +1,11 @@
+// Namespace of the watering controller module
+const WATERING_NAMESPACE = '/watering-controller'
+
 // Programs configuration dict
 var programs = {};
 
 document.getElementById('buttonReturn').onclick = function () {
-    httpPost('/programs', programs);
+    httpPost(WATERING_NAMESPACE + '/programs', programs);
     location.href = '/watering-controller';
 };
 
@@ -21,13 +24,34 @@ function httpPost(url, data) {
     return JSON.parse(xmlHttp.responseText);
 }
 
+// Update datetime every second
+setInterval(displayDate, 1000);
+
+// Display date and time in YY/MM/DD HH:MM format
+function displayDate() {
+    current_date = new Date();
+
+    year = current_date.getFullYear();
+    month = current_date.getMonth() + 1;
+    month = ((month < 10) ? '0' + month : month);
+    day = current_date.getDate();
+    day = ((day < 10) ? '0' + day : day);
+    hour = current_date.getHours();
+    hour = ((hour < 10) ? '0' + hour : hour);
+    minute = current_date.getMinutes();
+    minute = ((minute < 10) ? '0' + minute : minute);
+
+    document.getElementById('dateTime').innerHTML = year + "/" + month + "/" + day + "  " + hour + ":" + minute;
+}
+
 window.onload = function () {
+    displayDate();
     httpGetRequestPrograms();
 }
 
 // Get programs from the backend
 function httpGetRequestPrograms() {
-    programs = httpGet('/programs');
+    programs = httpGet(WATERING_NAMESPACE + '/programs');
 
     for (let id in programs){
         createProgramConsole(id, programs[id]);

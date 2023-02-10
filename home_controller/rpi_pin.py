@@ -2,8 +2,8 @@
 Raspberry Pi pin classes and methods for Input/Output pins 
 """
 
-from RPi import GPIO # pylint: disable=import-error
 from typing import Callable, Any
+from RPi import GPIO # pylint: disable=import-error
 # from home_controller import utils
 
 # Number of BCM pins on a Raspberry Pi 4
@@ -30,7 +30,10 @@ class RpiPinIn():
         assert isinstance(pull_up_down, bool)
 
         self.pin = pin
-        self.pull_up_down = GPIO.PUD_UP if pull_up_down else GPIO.PUD_DOWN # PULL_UP=True PULL_DOWN=False
+
+        # PULL_UP=True PULL_DOWN=False
+        self.pull_up_down = GPIO.PUD_UP if pull_up_down else GPIO.PUD_DOWN
+        self.event_detect_mode = None
 
         GPIO.setup(self.pin, GPIO.IN, self.pull_up_down)
 

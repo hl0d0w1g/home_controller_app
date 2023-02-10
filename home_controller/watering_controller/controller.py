@@ -97,7 +97,7 @@ def new_scheduled_programs_config(config:dict) -> None:
     Return:
     - None
     '''
-    assert isinstance(config, dict)
+    assert isinstance(config, dict), 'You should provide a dictionary'
 
     scheduled_programs = create_scheduled_programs(config)
     update_scheduled_programs(scheduled_programs)
@@ -113,7 +113,7 @@ def create_scheduled_programs(config:dict) -> list:
     Return:
     - scheduled_programs (list(ScheduledProgram)): List of ScheduledProgram objects
     '''
-    assert isinstance(config, dict)
+    assert isinstance(config, dict), 'You should provide a dictionary'
 
     scheduled_programs_ls = []
     for program_id, program_info in config.items():
@@ -148,8 +148,8 @@ def update_scheduled_programs(new_scheduled_programs:list) -> None:
     Return:
     - None
     '''
-    assert isinstance(new_scheduled_programs, list)
-    
+    assert isinstance(new_scheduled_programs, list), 'You should provide a list'
+
     global SCHEDULED_PROGRAMS
     SCHEDULED_PROGRAMS = new_scheduled_programs
 
@@ -274,5 +274,5 @@ signal.signal(signal.SIGTERM, gracefully_stop)
 
 # Create a daemon thread to keep the control of the scheduled programs
 thread = threading.Thread(name='scheduled_programs_daemon', target=scheduled_programs_daemon)
-thread.setDaemon(True)
+thread.daemon = True
 thread.start()
