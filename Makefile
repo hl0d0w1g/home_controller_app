@@ -19,8 +19,9 @@ install:
 	python3 -m venv venv
 	. ./venv/bin/activate
 	$(PIP) install -r requirements.txt
-	$(PIP) install pytest
+	$(PIP) install black
 	$(PIP) install pylint
+	$(PIP) install pytest
 
 venv: install
 	. ./venv/bin/activate
@@ -29,13 +30,15 @@ run: venv
 	echo "run"
 
 format: venv
-	black *.py
+	$(PYTHON) -m black .
 	
 lint: venv
-	$(PYTHON) -m pylint *.py
+	$(PYTHON) -m pylint .
 
 test: venv
 	$(PYTHON) -m pytest
+
+beauty: format lint test
 
 deploy-dev:
 	docker-compose -f docker-compose.dev.yml up --build
