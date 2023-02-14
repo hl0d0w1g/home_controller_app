@@ -82,6 +82,11 @@ def automatic(func: Callable) -> Callable:
         elif electricity and CONTINUOUS_WATER_FLOW_MINS < MAX_CONTINUOUS_WATER_FLOW_MINS:
             valve_open = True
         else:
+            logging(
+                'Main water valve is being closed because the maximum flow time has reached',
+                source_module='water_intake',
+                source_function='controller/automatic_control_main_water_valve'
+            )
             valve_open = False
 
         func(valve_open)
@@ -105,8 +110,18 @@ def control_main_water_valve(valve_open: Union[bool, None]) -> bool:
     if valve_open is not None:
         if valve_open:
             MAIN_WATER_VALVE.activate()
+            logging(
+                'Main water valve OPENED',
+                source_module='water_intake',
+                source_function='controller/control_main_water_valve'
+            )
         else:
             MAIN_WATER_VALVE.deactivate()
+            logging(
+                'Main water valve CLOSED',
+                source_module='water_intake',
+                source_function='controller/control_main_water_valve'
+            )
     return MAIN_WATER_VALVE.status()
 
 
