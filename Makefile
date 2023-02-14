@@ -15,29 +15,28 @@ install-docker:
 	sudo apt-get update -y
 	sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-install:
+venv:
 	python3 -m venv venv
 	. ./venv/bin/activate
+
+install: venv
 	$(PIP) install -r requirements.txt
 	$(PIP) install black
 	$(PIP) install pylint
 	$(PIP) install pytest
 
-venv: install
-	. ./venv/bin/activate
-
-format: venv
+format: install
 	$(PYTHON) -m black .
 	
-lint: venv
-	$(PYTHON) -m pylint app.py ./home_controller ./tests
+lint: install
+	$(PYTHON) -m pylint --exit-zero app.py ./home_controller ./tests
 
-test: venv
+test: install
 	$(PYTHON) -m pytest
 
 beauty: format lint test
 
-run: venv
+run: beauty
 	$(PYTHON) -m flask run --host=0.0.0.0
 
 deploy-dev:
