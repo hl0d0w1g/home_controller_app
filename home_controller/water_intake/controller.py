@@ -6,21 +6,16 @@ import random
 import threading
 from typing import Union, Callable
 
-from home_controller.io import (
-    MAIN_WATER_VALVE,
-    WATER_FLOW_SENSOR,
-    ELECTRICITY_SIGNAL,
-    WATERING_ANY
-)
+from home_controller.io import MAIN_WATER_VALVE, WATER_FLOW_SENSOR, ELECTRICITY_SIGNAL, WATERING_ANY
 from home_controller.config import (
     WATER_FLOW_SENSOR_MEASUREMENT_FREQUENCY,
     MAX_CONTINUOUS_WATER_FLOW_MINS,
     WFS_CONST_SUM,
-    WFS_CONST_DIV
+    WFS_CONST_DIV,
 )
 from home_controller.utils import logging, pause, get_datetime
 
-from .utils import save_flow_measurement#, save_historical_consumption
+from .utils import save_flow_measurement  # , save_historical_consumption
 
 
 def count_water_flow_sensor_pulse():
@@ -28,7 +23,7 @@ def count_water_flow_sensor_pulse():
     Count water flow sensor pulses
     '''
     global WATER_FLOW_SENSOR_PULSES
-    WATER_FLOW_SENSOR_PULSES += 1 # pylint: disable=undefined-variable
+    WATER_FLOW_SENSOR_PULSES += 1  # pylint: disable=undefined-variable
 
 
 def measure_water_flow() -> float:
@@ -44,23 +39,29 @@ def measure_water_flow() -> float:
     global WATER_FLOW_SENSOR_PULSES
     global CONTINUOUS_WATER_FLOW_MINS
 
-    flow = ((WATER_FLOW_SENSOR_PULSES * WATER_FLOW_SENSOR_MEASUREMENT_FREQUENCY) + WFS_CONST_SUM) / WFS_CONST_DIV
+    flow = (
+        (WATER_FLOW_SENSOR_PULSES * WATER_FLOW_SENSOR_MEASUREMENT_FREQUENCY) + WFS_CONST_SUM
+    ) / WFS_CONST_DIV
     WATER_FLOW_SENSOR_PULSES = 0
 
     # Development purposes only
     flow = float(random.randint(0, 100))
 
     if flow != 0:
-        CONTINUOUS_WATER_FLOW_MINS += (1 / WATER_FLOW_SENSOR_MEASUREMENT_FREQUENCY) / 60 # pylint: disable=undefined-variable
+        CONTINUOUS_WATER_FLOW_MINS += (  # pylint: disable=undefined-variable
+            1 / WATER_FLOW_SENSOR_MEASUREMENT_FREQUENCY
+        ) / 60
     else:
         CONTINUOUS_WATER_FLOW_MINS = 0
 
     return flow
 
-def automatic(func:Callable) -> Callable:
+
+def automatic(func: Callable) -> Callable:
     '''
     Wraps a valve controller function to automatically open it or close it
     '''
+
     def automatic_control_main_water_valve():
         '''
         Determines if the valve controller wrapped function should be opened or closed
@@ -72,7 +73,7 @@ def automatic(func:Callable) -> Callable:
         Return:
         - Wrapped function
         '''
-        global CONTINUOUS_WATER_FLOW_MINS # pylint: disable=global-variable-not-assigned
+        global CONTINUOUS_WATER_FLOW_MINS  # pylint: disable=global-variable-not-assigned
 
         electricity = ELECTRICITY_SIGNAL.read()
         watering = WATERING_ANY.status()
@@ -87,12 +88,13 @@ def automatic(func:Callable) -> Callable:
 
     return automatic_control_main_water_valve
 
-def control_main_water_valve(valve_open:Union[bool, None]) -> bool:
+
+def control_main_water_valve(valve_open: Union[bool, None]) -> bool:
     '''
     Opens or close the main water valve and returns the current status.
 
     Args:
-    - valve_open (bool, None): If the valve should be opened or closed. 
+    - valve_open (bool, None): If the valve should be opened or closed.
         If None return the current status.
 
     Return:
@@ -106,6 +108,7 @@ def control_main_water_valve(valve_open:Union[bool, None]) -> bool:
         else:
             MAIN_WATER_VALVE.deactivate()
     return MAIN_WATER_VALVE.status()
+
 
 def water_flow_measurement_daemon():
     '''
@@ -130,6 +133,7 @@ def water_flow_measurement_daemon():
 
         pause(1 / WATER_FLOW_SENSOR_MEASUREMENT_FREQUENCY)
 
+
 # def historical_consumption_daemon():
 #     '''
 
@@ -140,14 +144,13 @@ def water_flow_measurement_daemon():
 #         pause(60 * 60 * 12)
 
 # Keeps track of the pulses measured by the water flow sensor on each iteration
-WATER_FLOW_SENSOR_PULSES:int = 0
+WATER_FLOW_SENSOR_PULSES: int = 0
 # Keeps track of the time in minutes that the water has been flown through the sensor
-CONTINUOUS_WATER_FLOW_MINS:float = 0
+CONTINUOUS_WATER_FLOW_MINS: float = 0
 
 # Create a daemon thread to continuously measure the water flow
 water_flow_measurement_thread = threading.Thread(
-    name='water_flow_measurement_daemon',
-    target=water_flow_measurement_daemon
+    name='water_flow_measurement_daemon', target=water_flow_measurement_daemon
 )
 water_flow_measurement_thread.daemon = True
 water_flow_measurement_thread.start()

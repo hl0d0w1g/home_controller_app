@@ -4,9 +4,14 @@ Input/Output variables for the whole app
 
 from home_controller.rpi_pin import RpiPinIn, RpiPinOut
 from home_controller.config import (
-    MAIN_WATER_VALVE_PIN, WATER_FLOW_SENSOR_PIN, ELECTRICITY_SIGNAL_PIN,
-    WATERING_PIN_0, WATERING_PIN_1, WATERING_PIN_2, WATERING_PIN_3,
-    WATERING_PIN_ANY
+    MAIN_WATER_VALVE_PIN,
+    WATER_FLOW_SENSOR_PIN,
+    ELECTRICITY_SIGNAL_PIN,
+    WATERING_PIN_0,
+    WATERING_PIN_1,
+    WATERING_PIN_2,
+    WATERING_PIN_3,
+    WATERING_PIN_ANY,
 )
 
 # water_intake module

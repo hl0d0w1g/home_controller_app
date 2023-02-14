@@ -3,30 +3,32 @@ Raspberry Pi pin classes and methods for Input/Output pins
 """
 
 from typing import Callable, Any
-from RPi import GPIO # pylint: disable=import-error
+from RPi import GPIO  # pylint: disable=import-error
+
 # from home_controller import utils
 
 # Number of BCM pins on a Raspberry Pi 4
-N_PINS:int = 27
+N_PINS: int = 27
 
 GPIO.setmode(GPIO.BCM)
 
 
-class RpiPinIn():
+class RpiPinIn:
     '''
     Raspberry Pi pin class to configure INPUT pins
     '''
 
-    def __init__(self, pin:int, pull_up_down:bool=False):
+    def __init__(self, pin: int, pull_up_down: bool = False):
         '''
         Initialize RpiPinIn class
-                
+
         Args:
         - pin (int): Pin number in BCM mode to be configured
         - pull_up_down (bool): Pull up (True) or pull down (False) resistance
         '''
-        assert(isinstance(pin, int) and 1 <= pin <= N_PINS), \
-            'Provide an integer pin number between 1 and ' + str(N_PINS)
+        assert (
+            isinstance(pin, int) and 1 <= pin <= N_PINS
+        ), 'Provide an integer pin number between 1 and ' + str(N_PINS)
         assert isinstance(pull_up_down, bool)
 
         self.pin = pin
@@ -40,7 +42,7 @@ class RpiPinIn():
     def __str__(self) -> str:
         '''
         Return a string representation of the pin
-                
+
         Args:
         - None
         Return:
@@ -54,7 +56,7 @@ class RpiPinIn():
     def __repr__(self) -> str:
         '''
         Return a string representation of the pin
-                
+
         Args:
         - None
         Return:
@@ -73,7 +75,7 @@ class RpiPinIn():
         '''
         return GPIO.input(self.pin)
 
-    def add_event_detect(self, mode:bool, callback:Callable) -> None:
+    def add_event_detect(self, mode: bool, callback: Callable) -> None:
         '''
         Add a function to be executed when an event occurs in the pin
 
@@ -88,21 +90,22 @@ class RpiPinIn():
         GPIO.add_event_detect(self.pin, self.event_detect_mode, callback=callback)
 
 
-class RpiPinOut():
+class RpiPinOut:
     '''
     Raspberry Pi pin class to configure INPUT pins
     '''
 
-    def __init__(self, pin:int, initial:bool=False):
+    def __init__(self, pin: int, initial: bool = False):
         '''
         Initialize RpiPinOut class
-                
+
         Args:
         - pin (int): Pin number in BCM mode to be configured
         - initial (bool): Initial value, True for HIGH, False for LOW
         '''
-        assert(isinstance(pin, int) and 1 <= pin <= N_PINS), \
-            'Provide an integer pin number between 1 and ' + str(N_PINS)
+        assert (
+            isinstance(pin, int) and 1 <= pin <= N_PINS
+        ), 'Provide an integer pin number between 1 and ' + str(N_PINS)
         assert isinstance(initial, bool)
 
         self.pin = pin
@@ -113,7 +116,7 @@ class RpiPinOut():
     def __str__(self) -> str:
         '''
         Return a string representation of the pin
-                
+
         Args:
         - None
         Return:
@@ -127,7 +130,7 @@ class RpiPinOut():
     def __repr__(self) -> str:
         '''
         Return a string representation of the pin
-                
+
         Args:
         - None
         Return:
@@ -138,7 +141,7 @@ class RpiPinOut():
     def status(self) -> bool:
         '''
         Return if the pin is activated or not
-                
+
         Args:
         - None
         Return:
@@ -149,7 +152,7 @@ class RpiPinOut():
     def activate(self) -> None:
         '''
         Activate pin, by setting pin to HIGH
-                
+
         Args:
         - None
         Return:
@@ -167,7 +170,7 @@ class RpiPinOut():
     def deactivate(self) -> None:
         '''
         Deactivate pin, by setting pin to LOW
-                
+
         Args:
         - None
         Return:

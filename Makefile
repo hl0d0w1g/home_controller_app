@@ -26,19 +26,19 @@ install:
 venv: install
 	. ./venv/bin/activate
 
-run: venv
-	echo "run"
-
 format: venv
 	$(PYTHON) -m black .
 	
 lint: venv
-	$(PYTHON) -m pylint .
+	$(PYTHON) -m pylint app.py ./home_controller ./tests
 
 test: venv
 	$(PYTHON) -m pytest
 
 beauty: format lint test
+
+run: venv
+	$(PYTHON) -m flask run --host=0.0.0.0
 
 deploy-dev:
 	docker-compose -f docker-compose.dev.yml up --build

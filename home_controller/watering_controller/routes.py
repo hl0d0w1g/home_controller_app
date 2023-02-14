@@ -2,7 +2,7 @@
 Watering controller module web routes
 """
 
-from flask import render_template, request, jsonify # pylint: disable=import-error
+from flask import render_template, request, jsonify  # pylint: disable=import-error
 
 from home_controller import app, socketio
 from home_controller.config import WATERING_NAMESPACE
@@ -26,8 +26,9 @@ def watering_controller_socket_connect():
     logging(
         'Web client connected',
         source_module='watering_controller',
-        source_function='routes/socket_connect'
+        source_function='routes/socket_connect',
     )
+
 
 @socketio.on('disconnect', namespace=WATERING_NAMESPACE)
 def watering_controller_socket_disconnect():
@@ -42,7 +43,7 @@ def watering_controller_socket_disconnect():
     logging(
         'Web client disconnected',
         source_module='watering_controller',
-        source_function='routes/socket_disconnect'
+        source_function='routes/socket_disconnect',
     )
 
 
@@ -59,6 +60,7 @@ def watering_controller_homepage():
     '''
     return render_template('watering_controller.html')
 
+
 @app.route(f'{WATERING_NAMESPACE}/edit-programs')
 def watering_controller_edit_programs():
     '''
@@ -71,17 +73,19 @@ def watering_controller_edit_programs():
     '''
     return render_template('watering_controller_edit_programs.html')
 
+
 @app.route(f'{WATERING_NAMESPACE}/programs', methods=['GET'])
 def watering_controller_get_programs():
     '''
     Get all the programs
-    
+
     Args:
     - None
     Return:
     - None
     '''
     return jsonify(read_watering_config())
+
 
 @app.route(f'{WATERING_NAMESPACE}/programs', methods=['POST'])
 def watering_controller_save_programs():
@@ -96,8 +100,9 @@ def watering_controller_save_programs():
     controller.new_scheduled_programs_config(request.json)
     return ('{}', 200)
 
+
 @app.route(f'{WATERING_NAMESPACE}/program/<idx>', methods=['GET'])
-def watering_controller_init_program(idx:int):
+def watering_controller_init_program(idx: int):
     '''
     Initialize a program
 
@@ -110,20 +115,22 @@ def watering_controller_init_program(idx:int):
     controller.init_program(int(idx))
     return ('{}', 200)
 
+
 @app.route(f'{WATERING_NAMESPACE}/circuit/<idx>/<mins>', methods=['GET'])
-def watering_controller_init_circuit(idx:int, mins:int):
+def watering_controller_init_circuit(idx: int, mins: int):
     '''
     Initialize a circuit
 
     Args:
     - idx (int): Identifier of the circuit to initialize
     - mins (int): Minutes during which the circuit wil be open
-    
+
     Return:
     - None
     '''
     controller.init_circuit(int(idx), int(mins))
     return ('{}', 200)
+
 
 @app.route(f'{WATERING_NAMESPACE}/cancel', methods=['GET'])
 def watering_controller_stop_all():

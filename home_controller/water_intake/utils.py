@@ -3,16 +3,14 @@ Useful functions for the water intake module
 """
 
 import os
+
 # import pandas as pd
 
 from home_controller.config import WATER_FLOW_SENSOR_MEASUREMENT_FREQUENCY
-from home_controller.utils import (
-    logging, read_env_variable, get_datetime,
-    DATETIME_FMT
-)
+from home_controller.utils import logging, read_env_variable, get_datetime, DATETIME_FMT
 
 
-def save_flow_measurement(datetime:str, flow:float) -> None:
+def save_flow_measurement(datetime: str, flow: float) -> None:
     '''
     Save the last flow measurement record
 
@@ -41,7 +39,8 @@ def save_flow_measurement(datetime:str, flow:float) -> None:
         flowf.writelines(data)
         flowf.truncate()
 
-def read_flow_measurement(requested_data_points:int) -> dict:
+
+def read_flow_measurement(requested_data_points: int) -> dict:
     '''
     Get N last flow measurements from the file stores on disk
 
@@ -51,8 +50,9 @@ def read_flow_measurement(requested_data_points:int) -> dict:
     Return:
     - Requested flow measurements data points as dict {'datetime': [], 'flow': []}
     '''
-    assert(isinstance(requested_data_points, int) and requested_data_points > 0), \
-        'You should provide a positive integer > 0'
+    assert (
+        isinstance(requested_data_points, int) and requested_data_points > 0
+    ), 'You should provide a positive integer > 0'
 
     last_flow_sensor_data = {'datetime': [], 'flow': []}
     if os.path.exists(FLOW_24H_FILE):
@@ -63,6 +63,7 @@ def read_flow_measurement(requested_data_points:int) -> dict:
             last_flow_sensor_data['flow'] = [d[1].replace('\n', '') for d in data]
 
     return last_flow_sensor_data
+
 
 # def aggregates_flow_data(flow_data:list) -> int:
 #     '''
@@ -151,6 +152,6 @@ def read_flow_measurement(requested_data_points:int) -> dict:
 
 
 # File where the flow measurements of the last 24h are stored in disk
-FLOW_24H_FILE:str = read_env_variable('DATA_DIR', './data') + '/flow_24h.csv'
+FLOW_24H_FILE: str = read_env_variable('DATA_DIR', './data') + '/flow_24h.csv'
 # File where the aggregated flow data (consumption) is stored in disk
-CONSUMPTION_FILE:str = read_env_variable('DATA_DIR', './data') + '/consumption.csv'
+CONSUMPTION_FILE: str = read_env_variable('DATA_DIR', './data') + '/consumption.csv'

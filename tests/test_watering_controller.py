@@ -20,10 +20,10 @@ Testing of watering_controller module.
 #         """
 #         self.assertEqual(utils.weekday_time_combinations([], []), [])
 #         self.assertEqual(utils.weekday_time_combinations(['D'], []), [])
-        # self.assertEqual(
-        #     utils.weekday_time_combinations(['D'], ['12:00', '16:00']),
-        #     [('D', '12:00'), ('D', '16:00')]
-        # )
+# self.assertEqual(
+#     utils.weekday_time_combinations(['D'], ['12:00', '16:00']),
+#     [('D', '12:00'), ('D', '16:00')]
+# )
 #         # self.assertRaises(AssertionError, utils.weekday_time_combinations, days=['D'], times=[])
 
 #     def tearDown(self):
