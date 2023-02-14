@@ -24,6 +24,7 @@ install: venv
 	$(PIP) install black
 	$(PIP) install pylint
 	$(PIP) install pytest
+	$(PIP) install pytest-custom_exit_code
 
 format: install
 	$(PYTHON) -m black .
@@ -32,7 +33,7 @@ lint: install
 	$(PYTHON) -m pylint --exit-zero app.py ./home_controller ./tests
 
 test: install
-	$(PYTHON) -m pytest
+	$(PYTHON) -m pytest --suppress-no-test-exit-code
 
 beauty: format lint test
 
