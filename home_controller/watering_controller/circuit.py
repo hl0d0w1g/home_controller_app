@@ -5,7 +5,7 @@ Set of rpi pins to activate or deactivate a watering circuit.
 """
 
 from home_controller.config import WATERING_N_CIRCUITS
-from home_controller.IO import WATERING_0, WATERING_1, WATERING_2, WATERING_3, WATERING_ANY
+from home_controller.io import WATERING_0, WATERING_1, WATERING_2, WATERING_3, WATERING_ANY
 from home_controller.utils import logging
 
 

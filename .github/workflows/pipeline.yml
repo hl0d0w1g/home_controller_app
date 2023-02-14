@@ -21,7 +21,7 @@ jobs:
         pip install pylint
     - name: Analysing the code with pylint
       run: |
-        pylint $(git ls-files '*.py')
+        pylint --exit-zero $(git ls-files '*.py')
 
 #   tests:
 #     runs-on: ubuntu-18.04

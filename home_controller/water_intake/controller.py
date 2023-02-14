@@ -6,7 +6,7 @@ import random
 import threading
 from typing import Union, Callable
 
-from home_controller.IO import (
+from home_controller.io import (
     MAIN_WATER_VALVE,
     WATER_FLOW_SENSOR,
     ELECTRICITY_SIGNAL,

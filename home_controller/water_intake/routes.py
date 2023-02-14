@@ -84,6 +84,6 @@ def water_intake_main_water_valve():
     - None
     '''
     valve_status = request.args.get('status', default='', type=str)
-    valve_status = None if not valve_status else True if valve_status == 'true' else False
+    valve_status = None if not valve_status else valve_status == 'true'
     valve_status = controller.control_main_water_valve(valve_status)
     return str(valve_status).lower()

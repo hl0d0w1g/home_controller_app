@@ -6,7 +6,7 @@ import threading
 import signal
 
 from home_controller.config import WATERING_N_CIRCUITS, WATERING_N_PROGRAMS, WATERING_NAMESPACE
-from home_controller.IO import WATERING_0, WATERING_1, WATERING_2, WATERING_3, WATERING_ANY
+from home_controller.io import WATERING_0, WATERING_1, WATERING_2, WATERING_3, WATERING_ANY
 from home_controller.utils import logging, socket_emit, get_datetime, pause
 
 from .program import Program, ScheduledProgram

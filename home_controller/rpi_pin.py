@@ -144,7 +144,7 @@ class RpiPinOut():
         Return:
         - None
         '''
-        return True if self.activated == GPIO.HIGH else False
+        return self.activated == GPIO.HIGH
 
     def activate(self) -> None:
         '''

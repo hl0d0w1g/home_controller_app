@@ -10,4 +10,5 @@ WORKDIR /usr/src/home_controller_app
 COPY requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
 
+RUN pip install -U pytest
 RUN pip install git+https://github.com/nosix/raspberry-gpio-emulator/

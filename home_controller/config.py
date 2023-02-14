@@ -47,8 +47,8 @@ WATERING_NAMESPACE:str = '/watering-controller'
 # water_intake module
 # ----------------------------------
 # Water flow sensor constants for flow calc in L/m
-WFS_CONST_SUM:float = 0 
-WFS_CONST_DIV:float = 7.5 
+WFS_CONST_SUM:float = 0
+WFS_CONST_DIV:float = 7.5
 # Frequency of water flow measurement per second (Hz)
 WATER_FLOW_SENSOR_MEASUREMENT_FREQUENCY:float = 1 / 30
 # Max time in minutes that the water could flow continuously
