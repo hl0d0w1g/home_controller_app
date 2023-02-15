@@ -6,7 +6,7 @@ import os
 import time
 import re
 import datetime
-from typing import Union
+from typing import Union, List, Tuple
 
 # import logging
 from schema import Schema, SchemaError  # pylint: disable=import-error
@@ -14,11 +14,13 @@ from schema import Schema, SchemaError  # pylint: disable=import-error
 from home_controller import socketio
 
 # Abbreviations for the days of the week in Spanish
-SPANISH_WEEKDAYS_SHORT: set = set({'L', 'M', 'X', 'J', 'V', 'S', 'D'})
+SPANISH_WEEKDAYS_SHORT: List[str] = ['L', 'M', 'X', 'J', 'V', 'S', 'D']
 # Regex pattern for the time string
 TIME_RE_PATTERN = re.compile("^([01]?[0-9]|2[0-3]):[0-5][0-9]")
 # Datetime string format
 DATETIME_FMT: str = '%Y-%m-%d %H:%M:%S'
+# Time string format
+TIME_FMT: str = '%H:%M:%S'
 
 # logging.basicConfig(filename=os.path.join(
 #                                 os.path.dirname(os.path.abspath(__file__)), LOG_FILE_PATH
@@ -71,6 +73,27 @@ def get_datetime(
         return now.strftime(DATETIME_FMT)
 
     return now
+
+
+def get_weekday_and_time(timedelta: Union[dict, None] = None) -> Tuple[str, str]:
+    '''
+    Returns the current weekday (in Spanish) and time plus the specified time delta
+
+    Args:
+    - timedelta (dict): Timedelta to add in dict format {"days": d, "seconds": s, ...}
+
+    Return:
+    - Weekday and time (Tuple[str, str]): Current weekday (in Spanish) and time plus provided timedelta
+    '''
+    assert isinstance(
+        timedelta, (dict, type(None))
+    ), '''You should provide a time delta in format: {"days": d, "seconds": s, ...}.
+        More info: https://docs.python.org/es/3/library/datetime.html#timedelta-objects'''
+
+    now = get_datetime(timedelta)
+    time_ = f'{now.hour:02}:{now.minute:02}'
+    weekday_ = list(SPANISH_WEEKDAYS_SHORT)[now.weekday()]
+    return (weekday_, time_)
 
 
 def read_env_variable(name: str, default: str) -> str:
@@ -139,7 +162,7 @@ def socket_emit(route: str, message: dict, namespace: str = '/') -> None:
     - None
     '''
     assert isinstance(route, str), 'You should provide a string'
-    assert isinstance(message, str), 'You should provide a string'
+    assert isinstance(message, dict), 'You should provide a dictionary'
     assert isinstance(namespace, str), 'You should provide a string'
     socketio.emit(route, message, namespace=namespace)
 
@@ -181,7 +204,9 @@ def check_object_schema(obj_schema: Schema, obj: dict) -> bool:
         obj_schema.validate(obj)
         return True
     except SchemaError as error:
-        logging(error, source_module='home_controller', source_function='utils/check_object_schema')
+        logging(
+            str(error), source_module='home_controller', source_function='utils/check_object_schema'
+        )
         return False
 
 

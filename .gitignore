@@ -1,11 +1,9 @@
 # Logs
-logs
-*/logs/*
+logs/*
 *.log
 
 # Data
-data
-*/data/*
+data/*
 *.csv
 
 # VS Code

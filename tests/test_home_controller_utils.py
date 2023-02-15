@@ -2,33 +2,35 @@
 Testing the home_controller.utils module.
 """
 
-# import unittest
 # import datetime
+# import pytest
 
-# from home_controller import utils
+# from home_controller.utils import time_str_to_time, get_datetime
 
-# class TestHomeControllerUtils(unittest.TestCase):
-#     """
-#     Test functions of home_controller.utils module.
-#     """
-#     def setUp(self):
-#         pass
 
-#     def test_hour_str_to_time(self):
+class TestHomeControllerUtils:
+    """
+    Test functions of home_controller.utils module.
+    """
+    def test_sample(self) -> None:
+        '''test'''
+        assert True
+
+#     @pytest.mark.parametrize(
+#         'in_value, expected',
+#         [
+#             ('20:00', datetime.time.fromisoformat('20:00')),
+#             ('00:00', datetime.time.fromisoformat('00:00')),
+#         ],
+#     )
+#     def test_time_str_to_time(self, in_value, expected):
 #         """
-#         Test the hour_str_to_time function.
+#         Test the time_str_to_time function.
 #         """
-#         self.assertEqual(utils.hour_str_to_time('20:00'), datetime.time.fromisoformat('20:00'))
-#         self.assertEqual(utils.hour_str_to_time('00:00'), datetime.time.fromisoformat('00:00'))
+#         assert time_str_to_time(in_value) == expected
 
 #     def test_current_datetime(self):
 #         """
 #         Test the current_datetime function.
 #         """
-#         self.assertTrue(isinstance(utils.current_datetime(), datetime.datetime))
-
-#     def tearDown(self):
-#         pass
-
-# if __name__ == '__main__':
-#     unittest.main()
+#         assert isinstance(get_datetime(), datetime.datetime)

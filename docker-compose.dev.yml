@@ -23,3 +23,5 @@ services:
       - --bind=0.0.0.0:5000 
       - app:app
     tty: true
+
+# docker-compose -f docker-compose.dev.yml up --build

@@ -16,7 +16,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
-      run: make install
+      run: export DEV_ENV=true && make install
     - name: Formatting the code with black
       run: make format
     - name: Lint the code with pylint

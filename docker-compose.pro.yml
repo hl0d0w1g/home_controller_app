@@ -21,3 +21,4 @@ services:
       - 'REMOTE_REPOSITORY=${REMOTE_REPOSITORY}'
       - 'REMOTE_BRANCH=main'
 
+# docker-compose -f docker-compose.pro.yml up --build

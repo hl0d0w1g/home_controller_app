@@ -4,10 +4,11 @@ Controller functions of the watering module
 
 import threading
 import signal
+from typing import List
 
 from home_controller.config import WATERING_N_CIRCUITS, WATERING_N_PROGRAMS, WATERING_NAMESPACE
 from home_controller.io import WATERING_0, WATERING_1, WATERING_2, WATERING_3, WATERING_ANY
-from home_controller.utils import logging, socket_emit, get_datetime, pause
+from home_controller.utils import logging, socket_emit, get_datetime, get_weekday_and_time, pause
 
 from .program import Program, ScheduledProgram
 from .utils import save_watering_config, read_watering_config, weekday_time_combinations
@@ -30,8 +31,9 @@ def init_program(idx: int) -> None:
     # Deactivate STOP_WATERING flag
     resume_watering()
 
-    # Create the program and execute it within a thread
-    program = ScheduledProgram(idx, 'L', '00:00')
+    # Create the ScheduledProgram por now and execute it within a thread
+    (today_weekday, now_time) = get_weekday_and_time()
+    program = ScheduledProgram(idx, today_weekday, now_time)
     threading.Thread(target=program.execute, args=(is_watering_stopped,)).start()
 
 
@@ -103,7 +105,7 @@ def new_scheduled_programs_config(config: dict) -> None:
     save_watering_config(config)
 
 
-def create_scheduled_programs(config: dict) -> list:
+def create_scheduled_programs(config: dict) -> List[ScheduledProgram]:
     '''
     Create a the list of scheduled_programs
 
@@ -111,7 +113,7 @@ def create_scheduled_programs(config: dict) -> list:
     - config (dict): Watering configuration dictionary
 
     Return:
-    - scheduled_programs (list(ScheduledProgram)): List of ScheduledProgram objects
+    - scheduled_programs (List[ScheduledProgram]): List of ScheduledProgram objects
     '''
     assert isinstance(config, dict), 'You should provide a dictionary'
 
@@ -141,12 +143,12 @@ def create_scheduled_programs(config: dict) -> list:
     return scheduled_programs_ls
 
 
-def update_scheduled_programs(new_scheduled_programs: list) -> None:
+def update_scheduled_programs(new_scheduled_programs: List[ScheduledProgram]) -> None:
     '''
     Update the list of scheduled_programs
 
     Args:
-    - new_scheduled_programs (list): List of tuples with the new scheduled_programs
+    - new_scheduled_programs (List[ScheduledProgram]): List of the new scheduled_programs
 
     Return:
     - None
@@ -258,7 +260,7 @@ def gracefully_stop(signal_number: int, frame) -> None:
 # Flag to stop watering if is requested by the user
 STOP_WATERING: bool = False
 # List for the programmed scheduled programs by the user
-SCHEDULED_PROGRAMS: list = []
+SCHEDULED_PROGRAMS: List[ScheduledProgram] = []
 
 # Close all circuits as sanity check
 close_all_circuits()

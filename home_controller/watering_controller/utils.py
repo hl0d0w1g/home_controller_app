@@ -4,6 +4,7 @@ Useful functions for the watering controller module
 
 import json
 import itertools
+from typing import List, Tuple
 from schema import Schema, And, Use  # pylint: disable=import-error
 
 from home_controller.config import WATERING_N_CIRCUITS, WATERING_N_PROGRAMS
@@ -41,16 +42,16 @@ WATERING_CONFIG_SCHEMA = Schema(
 )
 
 
-def weekday_time_combinations(days: list, times: list) -> list:
+def weekday_time_combinations(days: List[str], times: List[str]) -> List[Tuple[str, str]]:
     '''
     Returns a list with the time and day of the week for each combination of days and times
 
     Args:
-    - days (list): List of days of the week
-    - times (list): List of times of the day
+    - days (List[str]): List of days of the week
+    - times (List[str]): List of times of the day
 
     Return:
-    - combinations (list): List with the hour and day of the week
+    - combinations (List[Tuple[str, str]]): List with the hour and day of the week
                             for each combination of days and times
     '''
     assert isinstance(days, list), 'You should provide a list of days'

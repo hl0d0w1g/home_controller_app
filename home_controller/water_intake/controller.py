@@ -18,7 +18,7 @@ from home_controller.utils import logging, pause, get_datetime
 from .utils import save_flow_measurement  # , save_historical_consumption
 
 
-def count_water_flow_sensor_pulse():
+def count_water_flow_sensor_pulse(channel: int):  # pylint: disable=unused-argument
     '''
     Count water flow sensor pulses
     '''
@@ -78,18 +78,24 @@ def automatic(func: Callable) -> Callable:
         electricity = ELECTRICITY_SIGNAL.read()
         watering = WATERING_ANY.status()
         if watering:
+            log_msg = 'The main water valve will be opened for watering'
             valve_open = True
         elif electricity and CONTINUOUS_WATER_FLOW_MINS < MAX_CONTINUOUS_WATER_FLOW_MINS:
+            log_msg = (
+                'The main water valve will be opened because the maximum flow time has not reached'
+            )
             valve_open = True
         else:
-            logging(
-                'Main water valve is being closed because the maximum flow time has reached',
-                source_module='water_intake',
-                source_function='controller/automatic_control_main_water_valve'
-            )
+            log_msg = 'The main water valve will be closed because there is no watering or electricity signals'
             valve_open = False
 
-        func(valve_open)
+        if MAIN_WATER_VALVE.status() != valve_open:
+            logging(
+                log_msg,
+                source_module='water_intake',
+                source_function='controller/automatic_control_main_water_valve',
+            )
+            func(valve_open)
 
     return automatic_control_main_water_valve
 
@@ -113,14 +119,14 @@ def control_main_water_valve(valve_open: Union[bool, None]) -> bool:
             logging(
                 'Main water valve OPENED',
                 source_module='water_intake',
-                source_function='controller/control_main_water_valve'
+                source_function='controller/control_main_water_valve',
             )
         else:
             MAIN_WATER_VALVE.deactivate()
             logging(
                 'Main water valve CLOSED',
                 source_module='water_intake',
-                source_function='controller/control_main_water_valve'
+                source_function='controller/control_main_water_valve',
             )
     return MAIN_WATER_VALVE.status()
 
@@ -141,7 +147,7 @@ def water_flow_measurement_daemon():
         current_flow = measure_water_flow()
         current_dt = get_datetime(in_str=True)
 
-        save_flow_measurement(current_dt, current_flow)
+        save_flow_measurement(str(current_dt), current_flow)
 
         # Opens or closes the main water valve depending on different parameters
         automatic(control_main_water_valve)()

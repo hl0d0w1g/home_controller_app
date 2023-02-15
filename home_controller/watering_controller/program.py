@@ -10,7 +10,7 @@ from home_controller.utils import (
     socket_emit,
     pause,
     time_str_to_time,
-    get_datetime,
+    get_weekday_and_time,
     SPANISH_WEEKDAYS_SHORT,
 )
 
@@ -137,9 +137,9 @@ class ScheduledProgram(Program):
         assert (
             isinstance(program_id, int) and 1 <= program_id <= WATERING_N_PROGRAMS
         ), 'Provide an integer program id between 1 and ' + str(WATERING_N_PROGRAMS)
-        assert (
-            isinstance(weekday, str) and weekday in SPANISH_WEEKDAYS_SHORT
-        ), 'Provide a valid weekday: ' + str(SPANISH_WEEKDAYS_SHORT)
+        assert isinstance(weekday, str) and weekday in SPANISH_WEEKDAYS_SHORT + [
+            'TODAY'
+        ], 'Provide a valid weekday: ' + str(SPANISH_WEEKDAYS_SHORT)
         assert isinstance(time, str) and len(time) == 5
 
         self.program_id = program_id
@@ -187,9 +187,9 @@ class ScheduledProgram(Program):
         Return:
         - (bool) if the program should be executed now
         '''
-        now = get_datetime()
-        now_time = time_str_to_time(f'{now.hour:02}:{now.minute:02}')
-        now_weekday = list(SPANISH_WEEKDAYS_SHORT)[now.weekday()]
+        (weekday_, time_) = get_weekday_and_time()
+        now_time = time_str_to_time(time_)
+        now_weekday = weekday_
 
         schedule_weekday = self.weekday
         schedule_time = self.time
