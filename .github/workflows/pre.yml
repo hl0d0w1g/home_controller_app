@@ -1,0 +1,38 @@
+# name: Deploy code on pre-production environment
+
+# on:
+#   push:
+#     branches:
+#       - pre
+
+# jobs:
+
+#   deploy:
+#     runs-on: ubuntu-20.04
+#     strategy:
+#       matrix:
+#         python-version: ["3.8"]
+#     steps:
+#     - uses: actions/checkout@v3
+#     - name: Set up Python ${{ matrix.python-version }}
+#       uses: actions/setup-python@v3
+#       with:
+#         python-version: ${{ matrix.python-version }}
+#     - name: Install dependencies
+#       run: make install
+#     - name: Formatting the code with black
+#       run: make format
+#     - name: Lint the code with pylint
+#       run: make lint
+#     - name: Test the code with pytest
+#       run: make test
+#     - name: Push to RPi
+#       uses: appleboy/scp-action@master
+#       with:
+#         host: ${{ secrets.SSH_HOST }}
+#         username: ${{ secrets.SSH_USERNAME }}
+#         key: ${{ secrets.SSH_KEY }}
+#         port: ${{ secrets.SSH_PORT }}
+#         source: "public/"
+#         strip_components: 1
+#         target: "/var/www/html"

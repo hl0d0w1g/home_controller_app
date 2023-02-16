@@ -31,8 +31,8 @@ lint: install
 	$(PYTHON) -m pylint --exit-zero app.py ./home_controller ./tests
 
 test: install
-	$(PYTHON) -m pytest -v
-	# $(PYTHON) -m coverage run -m pytest
+	$(PYTHON) -m coverage run -m pytest -v
+	$(PYTHON) -m coverage report
 
 beauty: format lint test	
 

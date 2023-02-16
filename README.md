@@ -9,9 +9,12 @@ This app is under continuous development, so more features will be added in the 
 - House water intake controller: This feature allows you to know to control the main valve water of the house and know the current water consumption as well as historic water consumption.
 - Web GUI (Spanish): It is exposed on port `5000` and shows all the features and system information.
 
-### Deploy App
+## Deploy App
 To deploy the app, just execute the following command:
 ```
 make run
 ```
 Once the app is deployed, it will be accesible on port `5000`.
+
+## Compatibility
+The app only has been tested with python 3.9 in Ubuntu 20.04 and Raspbian (September 22nd 2022)

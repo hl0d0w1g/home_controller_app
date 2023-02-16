@@ -9,11 +9,11 @@ Configuration variables and constants for the whole app.
 # water_intake module
 # ----------------------------------
 # Raspberry Pi GPIO pin number for the water flow sensor
-WATER_FLOW_SENSOR_PIN: int = 4
+WATER_FLOW_SENSOR_PIN: int = 6
 # Raspberry Pi GPIO pin number for the main water valve
-MAIN_WATER_VALVE_PIN: int = 5
+MAIN_WATER_VALVE_PIN: int = 12
 # Raspberry Pi GPIO pin number for the electricity signal
-ELECTRICITY_SIGNAL_PIN: int = 6
+ELECTRICITY_SIGNAL_PIN: int = 13
 
 # watering_controller module
 # ----------------------------------
