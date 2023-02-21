@@ -63,7 +63,7 @@ class Program:
         '''
         return self.__str__()
 
-    def execute(self, stop_event: bool = lambda: False) -> None:
+    def execute(self, stop_event: bool = lambda: False, resume_watering_flag: None = lambda: None) -> None:
         '''
         Execute the program (sequence of circuits)
 
@@ -118,6 +118,7 @@ class Program:
             )
 
         self.activated = False
+        resume_watering_flag()
 
 
 class ScheduledProgram(Program):
@@ -196,7 +197,7 @@ class ScheduledProgram(Program):
 
         return schedule_weekday == now_weekday and schedule_time == now_time
 
-    def scheduled_execute(self, stop_event: bool = lambda: False) -> None:
+    def scheduled_execute(self, stop_event: bool = lambda: False, resume_watering_flag: None = lambda: None) -> None:
         '''
         Execute scheduled program (sequence of circuits on the scheduled weekday and time)
 
@@ -218,7 +219,7 @@ class ScheduledProgram(Program):
             source_function='program/scheduled_execute',
         )
 
-        self.execute(stop_event)
+        self.execute(stop_event, resume_watering_flag)
 
         socket_emit(
             'activated-programs',

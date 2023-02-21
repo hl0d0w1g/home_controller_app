@@ -34,7 +34,7 @@ def init_program(idx: int) -> None:
     # Create the ScheduledProgram por now and execute it within a thread
     (today_weekday, now_time) = get_weekday_and_time()
     program = ScheduledProgram(idx, today_weekday, now_time)
-    threading.Thread(target=program.execute, args=(is_watering_stopped,)).start()
+    threading.Thread(target=program.scheduled_execute, args=(is_watering_stopped, resume_watering, )).start()
 
 
 def init_circuit(idx: int, mins: int) -> None:
@@ -58,7 +58,7 @@ def init_circuit(idx: int, mins: int) -> None:
 
     # Create a program of only one circuit and execute it within a thread
     circuit_program = Program({idx: mins})
-    threading.Thread(target=circuit_program.execute, args=(is_watering_stopped,)).start()
+    threading.Thread(target=circuit_program.execute, args=(is_watering_stopped, resume_watering, )).start()
 
 
 def close_all_circuits() -> None:
@@ -181,7 +181,7 @@ def scheduled_programs_daemon():
                 source_module='watering_controller',
                 source_function='controller/scheduled_programs_daemon',
             )
-            threading.Thread(target=program_to_execute.execute, args=(is_watering_stopped,)).start()
+            threading.Thread(target=program_to_execute.scheduled_execute, args=(is_watering_stopped, resume_watering, )).start()
             pause(60)
         else:
             pause(15)
